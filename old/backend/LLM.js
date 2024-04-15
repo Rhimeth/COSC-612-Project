@@ -13,13 +13,13 @@ export class LLM {
   // Attributes
   promptAndResponse = new Map();
   openai;
-  model = ""; // Set the model
-  apiKey = ""; // Set API key
+  model = "gpt-3.5-turbo"; // Set the model
+  apiKey = "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"; // Set API key
 
   // Singleton pattern
   constructor() {
     if (instance) {
-      return instance; // Stops attempt from creating new instance
+      return instance; // Returns existin instance
     }
     instance = this;
 
@@ -35,7 +35,7 @@ export class LLM {
       const response = await this.__callLLM(prompt);
       this.promptAndResponse.set(prompt, response);
     } catch (error) {
-      console.error("Query failed:", error);
+      console.error("Query method failed", error);
       return null;
     }
   }
@@ -45,6 +45,9 @@ export class LLM {
     if (typeof prompt !== "string") {
       throw new Error("Prompt must be a string");
     }
+    if (!prompt) {
+      throw new Error("Invalid prompt");
+    }
     if (prompt.length === 0) {
       throw new Error("Prompt cannot be empty");
     }
@@ -53,14 +56,13 @@ export class LLM {
     }
     try {
       const response = await this.openai.createCompletion({
-        model: model, // model nam
-        prompt: prompt,
+        model: model, // model name
+        prompt: prompt + "Only answer in two sentences.",
         max_tokens: 150,
       });
       return response.data.choices[0].text.trim();
-      
     } catch (error) {
-      console.error("Failed to get response from LLM:", error);
+      console.error("No response from LLM API", error);
       throw error;
     }
   }
