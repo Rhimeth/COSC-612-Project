@@ -9,12 +9,12 @@ No server needs to run to testing.
 Frontend does not need to be hooked up to backend for testing.
 
 ```
-- cd to the root folder Flavor-Formula
+- cd to the folder called 'old'
+- replace the .env with the file provided to you (it has api key)
 - npm install
 - npm install --save-dev jest 
 - npm test
 ```
-
 
 Front End
 - Has it's own development server using Vite. 
