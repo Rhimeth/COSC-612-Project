@@ -22,46 +22,45 @@ async function exploreSimilarRecipes(title, ingredients) {
   if (title) {
     titleWords = title.toLowerCase().split(/\s+/).filter(Boolean);
   }
-  console.log(titleWords);
+  console.log("titlewords", titleWords);
 
   const queryTitles = `SELECT Title FROM Recipe WHERE LOWER(Title) LIKE ANY ($1)`;
 
-  // TODO Possibly match 3, or 5 instead?
+  // TODO Possibly match 4, or 5 instead?
   const queryIngredients = `
     SELECT Title FROM Recipe 
     JOIN RecipeIngredients ON RecipeIngredients.RecipeID = Recipe.RecipeID
     JOIN Ingredient ON RecipeIngredients.IngredientID = Ingredient.IngredientID
-    WHERE Ingredient.Name = ANY($1)
+    WHERE LOWER(Ingredient.Name) = ANY($1)
     GROUP BY Recipe.RecipeID
-    HAVING COUNT(DISTINCT Ingredient.Name) >=4
+    HAVING COUNT(DISTINCT Ingredient.Name) >=3;
   `;
 
   try {
     // Query for titles based on title
-    const titleRes = await pool.query(queryTitles, [titleWords]);
-    console.log(titleRes);
-    const titleMatches = titleRes.rows.map((row) => row.title);
+    const titleResults = await pool.query(queryTitles, [titleWords]);
+    const titleMatches = titleResults.rows.map((row) => row.title);
 
     // Query for title based on ingredients
-    const ingredientRes = await pool.query(queryIngredients, [ingredients]);
-    console.log(ingredientRes);
-    const ingredientMatches = ingredientRes.rows.map((row) => row.title);
+    const ingredientResults = await pool.query(queryIngredients, [ingredients]);
+    const ingredientMatches = ingredientResults.rows.map((row) => row.title);
+
 
     // Combine results
     const allMatches = Array.from(
       new Set([...titleMatches, ...ingredientMatches])
     );
-    console.log(allMatches);
 
-    console.log("titleWords:", titleWords);
-    console.log("queryTitles:", queryTitles);
-    console.log("queryIngredients:", [titleWords]);
+    // TODO Query for all data to be sent to frontend
+    //const queryRecipes = `SELECT * FROM Recipe WHERE Title = ANY($1)`;
+    //const finalRes = await pool.query(queryRecipes, [allMatches]);
+    //return finalRes.rows; // Return full rows with recipe data
 
-    // Query for all data to be sent to frontend
-    const queryRecipes = `SELECT * FROM Recipe WHERE Title = ANY($1)`;
-    const finalRes = await pool.query(queryRecipes, [allMatches]);
+    // Cause huge problems, everything should be forced lowercase
+    const allMatchesLower = new Set([...allMatches].map((str) => str.toLowerCase()));
+    const allMatchesArray = [...allMatchesLower];
 
-    return finalRes.rows; // Return full rows with recipe data
+    return allMatchesArray;
   } catch (err) {
     console.error(err);
     throw new Error("Couldn't execute any queries");
