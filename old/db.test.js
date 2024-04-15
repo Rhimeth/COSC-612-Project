@@ -20,8 +20,8 @@ describe("AppUser Table", () => {
   beforeEach(async () => {
     await pool.query("BEGIN");
     await pool.query(
-      "INSERT INTO AppUser (AppUserID, Username, Password, Created_At) VALUES ($1, $2, $3, $4)",
-      [1, "testuser", "originalpassword", new Date()]
+      "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
+      [1, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
     );
   });
 
@@ -62,8 +62,8 @@ describe("SearchHistory Table Operations", () => {
   beforeEach(async () => {
     await pool.query("BEGIN");
     const userRes = await pool.query(
-      "INSERT INTO AppUser (AppUserID, Username, Password, Created_At) VALUES ($1, $2, $3, $4) RETURNING AppUserID",
-      [1, "testuser", "originalpassword", new Date()]
+      "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5) RETURNING AppUserID",
+      [1, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
     );
     await pool.query(
       "INSERT INTO SearchHistory (SearchID, AppUserID, SearchTerm, LLMSearch, LLMSearchResult) VALUES ($1, $2, $3, $4, $5)",
@@ -214,17 +214,17 @@ describe("Ingredient Table", () => {
 describe("Favorites Table", () => {
   beforeEach(async () => {
     await pool.query("BEGIN");
-    // Insert necessary data into AppUser
+
     await pool.query(
-      "INSERT INTO AppUser (AppUserID, Username, Password, Created_At) VALUES ($1, $2, $3, $4)",
-      [1, "testuser", "testpass", new Date()]
+      "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
+      [1, "testuser@gmail.com", "testuser", "testpass", new Date()]
     );
-    // Insert necessary data into Recipe
+
     await pool.query(
       "INSERT INTO Recipe (RecipeID, Directions, Description, Title) VALUES ($1, $2, $3, $4)",
       [1, "Mix well", "A delicious cake", "Cake"]
     );
-    // Now insert into Favorites
+
     await pool.query(
       "INSERT INTO Favorites (AppUserID, RecipeID, Favorited_At) VALUES ($1, $2, $3)",
       [1, 1, new Date()]
@@ -263,8 +263,8 @@ describe("UserRecipes Table", () => {
     await pool.query("BEGIN");
     // Insert necessary data into AppUser
     await pool.query(
-      "INSERT INTO AppUser (AppUserID, Username, Password, Created_At) VALUES ($1, $2, $3, $4)",
-      [1, "testuser", "testpass", new Date()]
+      "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
+      [1, "testuser@gmail.com", "testuser", "testpass", new Date()]
     );
     // Insert necessary data into Recipe
     await pool.query(
