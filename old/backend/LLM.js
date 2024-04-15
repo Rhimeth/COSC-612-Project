@@ -14,7 +14,7 @@ export class LLM {
   promptAndResponse = new Map();
   openai;
   model = "gpt-3.5-turbo"; // Set the model
-  a = ""; // Set key
+  apiKey = ""; // Set key
 
   // Singleton pattern
   constructor() {
@@ -40,6 +40,9 @@ export class LLM {
     }
   }
 
+
+
+
   // Called inside query()
   async __callLLM(prompt) {
     if (typeof prompt !== "string") {
@@ -57,7 +60,7 @@ export class LLM {
     try {
       const response = await this.openai.createCompletion({
         model: model, // model name
-        prompt: prompt + "Only answer in two sentences.",
+        prompt: String.concat(prompt, "Only answer in two sentences."),
         max_tokens: 150,
       });
       return response.data.choices[0].text.trim();
@@ -66,4 +69,6 @@ export class LLM {
       throw error;
     }
   }
+
+
 }
