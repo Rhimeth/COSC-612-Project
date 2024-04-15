@@ -14,7 +14,7 @@ export class LLM {
   promptAndResponse = new Map();
   openai;
   model = "gpt-3.5-turbo"; // Set the model
-  apiKey = "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"; // Set API key
+  apiKey = ""; // Set API key
 
   // Singleton pattern
   constructor() {
