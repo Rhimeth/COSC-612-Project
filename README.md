@@ -24,8 +24,9 @@ Front End
 If you are in the frontendREACT folder
 
 ```
+cd old/fronendREACT
 npm install
-npm start
+npm run dev
 go to the localhost url provided to you
 ```
 

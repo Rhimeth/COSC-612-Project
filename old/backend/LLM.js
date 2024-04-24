@@ -2,31 +2,41 @@
 Currently setup to work with OpenAI's API
 */
 
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 let instance;
 
-export class LLM {
+class LLM {
   // Attributes
-  promptAndResponse = new Map();
   openai;
+  promptAndResponse = new Map();
   model = "gpt-3.5-turbo"; // Set the model
-  a = ""; // Set key
+  apiKey = process.env["OPEN_API_KEY"]; // Set API key
+  temperature = 0; // deterministic
+
 
   // Singleton pattern
   constructor() {
     if (instance) {
-      return instance; // Returns existin instance
+      return instance; // Stops attempt from creating new instance
     }
     instance = this;
 
-    const configuration = new Configuration({
-      apiKey: apiKey,
+    const openai = new OpenAI({
+      organization: "org-FzyqOvlHfNso0q3MLanLBMIC",
+      project: "proj_bn69z1YXucu7oqp3bPmGglRz",
+      apiKey: this.apiKey,
     });
-    this.openai = new OpenAIApi(configuration);
+  }
+
+  getInstance(){
+    if (instance) {
+      return instance;
+    }
+    return new LLM();
   }
 
   // API Call
@@ -35,18 +45,16 @@ export class LLM {
       const response = await this.__callLLM(prompt);
       this.promptAndResponse.set(prompt, response);
     } catch (error) {
-      console.error("Query method failed", error);
+      console.error("Query failed:", error);
       return null;
     }
   }
 
   // Called inside query()
+  // TODO currently hardcoded to a test prompt
   async __callLLM(prompt) {
     if (typeof prompt !== "string") {
       throw new Error("Prompt must be a string");
-    }
-    if (!prompt) {
-      throw new Error("Invalid prompt");
     }
     if (prompt.length === 0) {
       throw new Error("Prompt cannot be empty");
@@ -55,15 +63,18 @@ export class LLM {
       throw new Error("Prompt must be more than 10 characters");
     }
     try {
-      const response = await this.openai.createCompletion({
-        model: model, // model name
-        prompt: prompt + "Only answer in two sentences.",
-        max_tokens: 150,
+      const chatComplettion = await this.openai.chat.completions.create({
+        messages: [{ role: "user", content: "Say this is a test" }],
+        model: this.model,
+        temperature: this.temperature,
       });
-      return response.data.choices[0].text.trim();
+
+      return chatComplettion.data.choices[0].text.trim();
     } catch (error) {
-      console.error("No response from LLM API", error);
+      console.error("Failed to get response from LLM: ", error);
       throw error;
     }
   }
 }
+
+export default LLM;

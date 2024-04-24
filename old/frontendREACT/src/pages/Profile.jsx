@@ -1,3 +1,14 @@
 export default function Profile() {
-    return <h1>Profile</h1>
-}
+    return (
+      <div>
+        <h1>Profile</h1>
+        <p>
+        Username:
+        </p>
+        <p>
+        Email:
+        </p>
+      </div>
+    );
+  }
+  

@@ -77,7 +77,7 @@ body {
 }
 
 .card-button:hover {
-  transform: perspective(1px) scale(1.1)
+  transform: perspective(1px) scale(1.1);
 }
 
 .home .search {
@@ -90,4 +90,92 @@ body {
 
 .home .favorites {
   background-color: rgb(201, 226, 255);
+}
+
+/* Search Styling */
+.search-container {
+  display: flex; /* makes it a row */
+  align-items: center; /* centers the row items */
+  justify-content: space-around;
+  max-width: 70rem;
+  background-color: rgba(73, 255, 2, 0.192);
+  padding: 2rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  margin: auto;
+}
+
+.search-input {
+  padding: 0.75rem;
+  border: 0.1rem solid #000000;
+}
+
+.wide-input {
+  min-width: 300px;
+}
+
+.wide-textarea {
+  min-width: 300px;
+  height: 150px;
+  resize: vertical;
+}
+
+.search-paragraph {
+  font-size: x-large;
+  font-weight: bold;
+  width: 100%;
+}
+
+/*Search Buttons*/
+.search-button {
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.button {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Results Cards and Section */
+.card-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap; /* Allows wrapping if there are many cards */
+  padding: 10px;
+  margin-top: 1rem; 
+}
+
+.card-button {
+  width: 200px;
+  height: 300px;
+  border: 0.2rem solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.card-button:hover {
+  transform: perspective(1px) scale(1.1);
+}
+
+.results-section {
+  background-color: rgba(255, 255, 255, 0.562); 
+  padding: 1rem;
+  position: relative;
+  top: 5rem;
+  font-size: x-large;
+  font-weight: bold;
 }
