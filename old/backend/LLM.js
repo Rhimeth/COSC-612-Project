@@ -9,23 +9,39 @@ dotenv.config();
 
 let instance;
 
-export class LLM {
+class LLM {
   // Attributes
-  promptAndResponse = new Map();
   openai;
+  promptAndResponse = new Map();
   model = "gpt-3.5-turbo"; // Set the model
-  apiKey = ""; // Set key
+  apiKey = process.env["OPEN_API_KEY"]; // Set API key
+  temperature = 0; // deterministic
 
   // Singleton pattern
   constructor() {
     if (instance) {
-      return instance; // Returns existin instance
+      return instance; // Stops attempt from creating new instance
     }
     instance = this;
 
-    const openAIClient = new OpenAI({
-      apikey: process.env["OPENAI_API_KEY"],
+
+    const openai = new OpenAI({
+      organization: "org-FzyqOvlHfNso0q3MLanLBMIC",
+      project: "proj_bn69z1YXucu7oqp3bPmGglRz",
+      apiKey: this.apiKey,
     });
+  }
+
+  getInstance(){
+    if (instance) {
+      return instance;
+    }
+    return new LLM();
+
+    const openAIClient = new OpenAI({
+      apikey: this.apiKey
+    });
+
   }
 
   // API Call
@@ -34,12 +50,15 @@ export class LLM {
       const response = await this.__callLLM(prompt);
       this.promptAndResponse.set(prompt, response);
     } catch (error) {
-      console.error("Query method failed", error);
-      throw error;
+
+      console.error("Query failed:", error);
+      return null;
+
     }
   }
 
   // Called inside query()
+  // TODO currently hardcoded to a test prompt
   async __callLLM(prompt) {
     if (typeof prompt !== "string") {
       throw new Error("Prompt must be a string");
@@ -54,23 +73,16 @@ export class LLM {
       throw new Error("Prompt must be more than 10 characters");
     }
     try {
-      const response = await this.openAIClient.chat.completions.create({
-        model: model, // model name
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a culinary expert but you express it overtly because you are a chatbot of few words. When users ask you about anything other than food, recipes, cooking, ingredients, or descriptions of recipes, you should not respond. You should respond with only one good sentence, followed by 5 possible food titles that either 1) have the ingredients they are interested in used in the food, or 2) may be a food or recipe the user is describing but doesn't know the name of. For example the user may say 'I was at a BBQ and there was this food on a stick, some were peppers, but had other vegetables that idk what they were', you may give you best 5 guess for what it could have been.",
-          },
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
+
+      const chatComplettion = await this.openai.chat.completions.create({
+        messages: [{ role: "user", content: "Say this is a test" }],
+        model: this.model,
+        temperature: this.temperature, 
       });
-      return response.data.choices[0].text.trim();
+
+      return chatComplettion.data.choices[0].text.trim();
     } catch (error) {
-      console.error("No response from LLM API", error);
+      console.error("Failed to get response from LLM: ", error);
       throw error;
     }
   }
