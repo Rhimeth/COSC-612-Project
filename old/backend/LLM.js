@@ -17,13 +17,13 @@ class LLM {
   apiKey = process.env["OPEN_API_KEY"]; // Set API key
   temperature = 0; // deterministic
 
-
   // Singleton pattern
   constructor() {
     if (instance) {
       return instance; // Stops attempt from creating new instance
     }
     instance = this;
+
 
     const openai = new OpenAI({
       organization: "org-FzyqOvlHfNso0q3MLanLBMIC",
@@ -37,6 +37,11 @@ class LLM {
       return instance;
     }
     return new LLM();
+
+    const openAIClient = new OpenAI({
+      apikey: this.apiKey
+    });
+
   }
 
   // API Call
@@ -45,8 +50,10 @@ class LLM {
       const response = await this.__callLLM(prompt);
       this.promptAndResponse.set(prompt, response);
     } catch (error) {
+
       console.error("Query failed:", error);
       return null;
+
     }
   }
 
@@ -59,14 +66,18 @@ class LLM {
     if (prompt.length === 0) {
       throw new Error("Prompt cannot be empty");
     }
+    if (!prompt) {
+      throw new Error("Invalid prompt");
+    }
     if (prompt.length < 11) {
       throw new Error("Prompt must be more than 10 characters");
     }
     try {
+
       const chatComplettion = await this.openai.chat.completions.create({
         messages: [{ role: "user", content: "Say this is a test" }],
         model: this.model,
-        temperature: this.temperature,
+        temperature: this.temperature, 
       });
 
       return chatComplettion.data.choices[0].text.trim();
