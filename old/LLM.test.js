@@ -5,7 +5,7 @@
 // is recorded
 
 
-import { LLM } from "./LLM";
+import LLM from "./backend/LLM";
 
 describe("LLM class", () => {
   let LLMisntance;
@@ -25,21 +25,21 @@ describe("LLM class", () => {
   describe("callLLM method", () => {
     it("should throw an error if prompt is not a string", async () => {
       const prompt = 12345; // Not a string
-      await expect(LLMisntance.callLLM(prompt)).rejects.toThrow(
+      await expect(LLMisntance.query(prompt)).rejects.toThrow(
         "Prompt must be a string"
       );
     });
 
     it("should throw an error if prompt is empty sting", async () => {
       const prompt = ""; // Empty string
-      await expect(LLMisntance.callLLM(prompt)).rejects.toThrow(
+      await expect(LLMisntance.query(prompt)).rejects.toThrow(
         "Prompt cannot be empty"
       );
     });
 
     it("should throw an error if prompt is less than 11 characters", async () => {
       const prompt = "abc"; // Less than 11 characters
-      await expect(LLMisntance.callLLM(prompt)).rejects.toThrow(
+      await expect(LLMisntance.query(prompt)).rejects.toThrow(
         "Prompt must be more than 10 characters"
       );
     });
@@ -47,13 +47,7 @@ describe("LLM class", () => {
     it("should work if the string is over 11 characters", async () => {
       const prompt = "This prompt is longer than ten characters";
 
-        // Requires properly mocking the method call and doing fake responses
-         
-        // OR
-
-        // Could just actually do the reall API call and not mock it, then
-        // see if promptAndResponse both have strings in them, if so
-        // we're good
+      // should work
 
 
     });

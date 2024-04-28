@@ -1,18 +1,21 @@
+/* Overall */
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background-color: #333;
 }
 
-.container {
+.main-content {
   margin: 1rem;
   text-align: center;
 }
 
 .nav {
-  background-color: #333;
+  background-color: #00aeff52;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -26,6 +29,7 @@ body {
   text-decoration: none;
 }
 
+/* Nav bar */
 .nav ul {
   padding: 0;
   margin: 0;
@@ -80,15 +84,15 @@ body {
   transform: perspective(1px) scale(1.1);
 }
 
-.home .search {
+.search {
   background-color: rgb(201, 226, 255);
 }
 
-.home .my-recipes {
+.my-recipes {
   background-color: rgb(201, 226, 255);
 }
 
-.home .favorites {
+.favorites {
   background-color: rgb(201, 226, 255);
 }
 
@@ -100,8 +104,8 @@ body {
   max-width: 70rem;
   background-color: rgba(73, 255, 2, 0.192);
   padding: 2rem;
-  padding-left: 4rem;
-  padding-right: 4rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
   margin: auto;
 }
 
@@ -130,7 +134,7 @@ body {
 .search-button {
   padding: 0.75rem;
   margin-top: 1rem;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 2rem;
@@ -140,19 +144,20 @@ body {
 }
 
 .button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border-radius: 0.5rem;
   font-size: 1rem;
 }
 
 /* Results Cards and Section */
+
 .card-container {
   display: flex;
   justify-content: space-evenly;
-  flex-wrap: wrap; /* Allows wrapping if there are many cards */
+  flex-wrap: wrap;
   padding: 10px;
-  margin-top: 1rem; 
+  margin-top: 1rem;
 }
 
 .card-button {
@@ -172,10 +177,21 @@ body {
 }
 
 .results-section {
-  background-color: rgba(255, 255, 255, 0.562); 
-  padding: 1rem;
-  position: relative;
-  top: 5rem;
+  display: flex; /* makes it a row */
+  align-items: center; /* centers the row items */
+  justify-content: space-around;
+  background-color: rgba(255, 255, 255, 0.562);
+  max-width: 70rem;
   font-size: x-large;
   font-weight: bold;
+  margin: auto;
+
+}
+
+.title-search-results {
+  padding-right: 4rem;
+  
+}
+.llm-search-results{
+  padding-left: 4rem;
 }

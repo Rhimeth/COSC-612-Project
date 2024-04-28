@@ -14,11 +14,13 @@ export default function Search() {
   const handleTitleSearch = async () => {
     if (!titleSearch) {
       alert("Search can't be empty");
+      return;
     }
 
     try {
+      alert("At the try block for frontend title search")
       const response = await fetch(
-        `/database/titlesearch?q=${encodeURIComponent(titleSearch)}`
+        `/api/database/titlesearch?q=${encodeURIComponent(titleSearch)}`
       );
       const data = await response.json();
       setTitleSearchResults(data);
@@ -32,10 +34,12 @@ export default function Search() {
   const handleLlmSearch = async () => {
     if (llmSearch.trim().length <= 10) {
       alert("LLM search must be more than 10 characters");
+      return;
     } else {
       try {
+        alert('at the try block for front end llm search')
         const response = await fetch(
-          `/database/llmsearch?q=${encodeURIComponent(llmSearch)}`
+          `/api/database/llmsearch?q=${encodeURIComponent(llmSearch)}`
         );
         const data = await response.json();
         setLlmResults(data);
@@ -75,8 +79,8 @@ export default function Search() {
         </div>
       </div>
       <div className="results-section">
-        <p>Results</p>
         <div className="title-search-results">
+          <p>Title Results</p>
           {titleSearchResults.map((searchResult) => (
             <div key={searchResult.id} className="card-button">
               <h3>{searchResult.title}</h3>
@@ -84,8 +88,8 @@ export default function Search() {
             </div>
           ))}
         </div>
-
         <div className="llm-search-results">
+          <p>LLM Results</p>
           {llmResults.map((result, index) => (
             <div key={index} className="text-response">
               <h3>{result.response}</h3>
