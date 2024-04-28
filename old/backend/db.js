@@ -6,7 +6,7 @@ Change DATABASE_URL_CLOUD to DATABASE_URL_LOCAL if you want to make database loc
 import dotenv from "dotenv"; // load env variables from .env
 import pg from "pg"; // PostgreSQL module
 
-dotenv.config();
+dotenv.config({path: '../.env'});
 const { Pool } = pg;
 
 console.log(process.env.DATABASE_URL_CLOUD);
