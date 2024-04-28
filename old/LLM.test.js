@@ -5,7 +5,7 @@
 // is recorded
 
 
-import { LLM } from "./LLM";
+import LLM from "./backend/LLM";
 
 describe("LLM class", () => {
   let LLMisntance;

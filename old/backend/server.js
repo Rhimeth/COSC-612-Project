@@ -8,7 +8,7 @@ The server is currently listening on port 3000
 
 import express from "express"; // Express
 import pool from "./db.js"; // Importing pool from db
-import LLM from "../../../backend/LLM";
+import LLM from "./LLM.js";
 
 const llm = new LLM();
 const app = express();
@@ -28,10 +28,14 @@ app.use(express.json());
 GET Requests
 */
 
+app.get('/', (req, res) => {
+  res.send('sucessful GET request');
+});
+
 // Title Search
 app.get("/database/titlesearch", async (req, res) => {
-  const { searchTitle } = req.query.q;
-  const searchwords = searchTitle.split(/\s+/); // So we can search by words
+  const searchTitle = req.query.q;
+  const searchWords = searchTitle.split(/\s+/); // So we can search by words
   const searchPattern = searchWords.join("|"); // recombine to match 2 or 3
 
   const sqlTitleSearch = `
@@ -45,11 +49,16 @@ app.get("/database/titlesearch", async (req, res) => {
       WHERE r.Title ILIKE $1 OR r.Title ~* $2
       ORDER BY Priority, r.Title
       LIMIT 20;`;
-      
-  const results = await pool.query(sqlTitleSearch, [`%${searchTitle}%`, searchPattern]);
-  res.json(results.rows);
 
   try {
+    console.log("made it to the backend try statement");
+    const results = await pool.query(sqlTitleSearch, [
+      `%${searchTitle}%`,
+      searchPattern,
+    ]);
+    console.log("just finished query, going to send response");
+    console.log(results.rows);
+    console.log("response sent");
     
   } catch (error) {
     console.error(error.message);
@@ -61,6 +70,7 @@ app.get("/database/titlesearch", async (req, res) => {
 app.get("/database/LLMsearch"),
   (req, res) => {
     try {
+      console.log("made it to the backend try statement");
       const { prompt } = req.query.q;
       results = llm.query(prompt);
       res.json(results.rows);
