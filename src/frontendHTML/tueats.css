@@ -1,0 +1,25 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-image: url("https://inside.towson.edu/brandAssets/common/downloads/brandmarks/png/TowsonUlogo-horiz-color-pos.png"); /*Towson Logo*/
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: 200px 100px;
+    
+  }
+
+body {
+    font-family: sans-serif;/* Set font  for the entire body */
+    margin: 0; /*Remove default margin */
+    padding: 30px;/* Add padding around the body content */
+  }
+
+  h1 {
+    text-align: left;/* Center-align the text */
+    margin-bottom: 20px;
+    color: #e22f0c; 
+  }
+
+  
+  
+  
