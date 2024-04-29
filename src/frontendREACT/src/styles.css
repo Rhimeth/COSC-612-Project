@@ -161,15 +161,16 @@ body {
 }
 
 .card-button {
-  width: 200px;
-  height: 300px;
-  border: 0.2rem solid black;
+  width: 300px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: black;
   font-size: 1rem;
   transition: all 0.2s;
+  margin-bottom: 1rem;
+  background-color: rgba(160, 255, 153, 0.289);
 }
 
 .card-button:hover {

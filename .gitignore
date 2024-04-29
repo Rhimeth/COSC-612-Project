@@ -27,4 +27,4 @@ dist-ssr
 
 src/node_modules
 src/old.env
-
+src/frontendREACT/node_modules

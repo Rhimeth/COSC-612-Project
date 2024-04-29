@@ -12,17 +12,24 @@ export default function Search() {
 
   // Title Search
   const handleTitleSearch = async () => {
+    console.log("Entering handleTitleSearch");
     if (!titleSearch) {
       alert("Search can't be empty");
       return;
     }
 
     try {
-      alert("At the try block for frontend title search")
+      console.log("Searching for: ", titleSearch);
       const response = await fetch(
         `/api/database/titlesearch?q=${encodeURIComponent(titleSearch)}`
       );
-      const data = await response.json();
+      let data = await response.json();
+      console.log("Data received:", data);
+      data = data.map((item) => ({
+        ...item,
+        directions: JSON.parse(item.directions),
+        measurementingredient: JSON.parse(item.measurementingredient),
+      }));
       setTitleSearchResults(data);
     } catch (error) {
       console.error("Unable to fetch data due to", error);
@@ -37,7 +44,7 @@ export default function Search() {
       return;
     } else {
       try {
-        alert('at the try block for front end llm search')
+        alert("at the try block for front end llm search");
         const response = await fetch(
           `/api/database/llmsearch?q=${encodeURIComponent(llmSearch)}`
         );
@@ -82,9 +89,8 @@ export default function Search() {
         <div className="title-search-results">
           <p>Title Results</p>
           {titleSearchResults.map((searchResult) => (
-            <div key={searchResult.id} className="card-button">
+            <div key={searchResult.recipeid} className="card-button">
               <h3>{searchResult.title}</h3>
-              <p>{searchResult.description}</p>
             </div>
           ))}
         </div>

@@ -28,8 +28,8 @@ app.use(express.json());
 GET Requests
 */
 
-app.get('/', (req, res) => {
-  res.send('sucessful GET request');
+app.get("/", (req, res) => {
+  res.send("sucessful GET request");
 });
 
 // Title Search
@@ -39,7 +39,7 @@ app.get("/database/titlesearch", async (req, res) => {
   const searchPattern = searchWords.join("|"); // recombine to match 2 or 3
 
   const sqlTitleSearch = `
-      SELECT r.RecipeID, r.Title, r.Description,
+      SELECT r.RecipeID, r.Title, r.directions, r.measurementingredient,
         CASE
           WHEN r.Title ILIKE $1 THEN 1
           WHEN r.Title ~* $2 THEN 2
@@ -48,7 +48,7 @@ app.get("/database/titlesearch", async (req, res) => {
       FROM Recipe r
       WHERE r.Title ILIKE $1 OR r.Title ~* $2
       ORDER BY Priority, r.Title
-      LIMIT 20;`;
+      LIMIT 10;`;
 
   try {
     console.log("made it to the backend try statement");
@@ -58,8 +58,8 @@ app.get("/database/titlesearch", async (req, res) => {
     ]);
     console.log("just finished query, going to send response");
     console.log(results.rows);
+    res.json(results.rows)
     console.log("response sent");
-    
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
