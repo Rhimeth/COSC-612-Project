@@ -2,6 +2,7 @@
 
 A project built by Towson University students for their Software Engineering class (COSC 612)
 
+- !!! must put in the .env file for root in order to use POSTGRES on railway and LLM API
 
 Front End
 - Has it's own development server using Vite
