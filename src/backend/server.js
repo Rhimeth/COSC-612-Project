@@ -14,6 +14,7 @@ const llm = new LLM();
 const app = express();
 const port = 3000;
 
+
 // Starts server on port 3000
 console.log("Starting the server...");
 app.listen(port, () => {
@@ -67,12 +68,12 @@ app.get("/database/titlesearch", async (req, res) => {
 });
 
 // LLM Search
-app.get("/database/LLMsearch"),
-  (req, res) => {
+app.get("/database/llmsearch"),
+  async (req, res) => {
     try {
-      console.log("made it to the backend try statement");
-      const { prompt } = req.query.q;
-      results = llm.query(prompt);
+      console.log("At backend LLM try block");
+      const prompt = req.query.q;
+      const results = await llm.query(prompt);
       res.json(results.rows);
     } catch (error) {
       console.error(error.message);
@@ -103,7 +104,7 @@ app.post("/register", async (req, res) => {
 
     // Insert user
     console.log("Attempting to insert appuser data");
-    const result = await pool.query(
+    await pool.query(
       "INSERT INTO AppUser (username, email, password) VALUES ($1, $2, $3) RETURNING *",
       [username, email, password]
     );
@@ -134,3 +135,27 @@ app.get("/getUserInfo", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+// TODO login page
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    console.log("Attempting to log in");
+    const user = await pool.query(
+      "SELECT * FROM AppUser WHERE username = $1 AND password = $2",
+      [username, password]
+    );
+    if (user.rows.length > 0) {
+      console.log("Login successful");
+      res.json({ success: true, message: "Login successful" });
+    } else {
+      console.log("Login failed: Incorrect username or password");
+      res.json({ success: false, message: "Incorrect username or password" });
+    }
+  } catch (error) {
+    console.error("Database error during login:", error.message);
+    res.status(500).send("Server error during login");
+  }
+});
+
+

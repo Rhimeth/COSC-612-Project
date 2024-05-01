@@ -11,20 +11,23 @@ let instance;
 
 class LLM {
   // Attributes
-  openai;
-  promptAndResponse = new Map();
-  model = "gpt-3.5-turbo"; // Set the model
-  apiKey = process.env["OPEN_API_KEY"]; // Set API key
-  temperature = 0; // deterministic
+  promptAndResponse = new Map()
+  model = "gpt-3.5-turbo" // Set the model
+  // eslint-disable-next-line no-undef
+  apiKey = process.env["OPEN_API_KEY"] // Set API key
+  temperature = 0 // deterministic
 
 
   // Singleton pattern
   constructor() {
     if (instance) {
       return instance; // Stops attempt from creating new instance
+    } else {
+      instance = this;
     }
-    instance = this;
+    
 
+    // eslint-disable-next-line no-unused-vars
     const openai = new OpenAI({
       organization: "org-FzyqOvlHfNso0q3MLanLBMIC",
       project: "proj_bn69z1YXucu7oqp3bPmGglRz",

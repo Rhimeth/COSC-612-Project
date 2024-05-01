@@ -8,7 +8,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-old/node_modules
 dist
 dist-ssr
 *.local
@@ -25,6 +24,6 @@ dist-ssr
 *.sw?
 *.env
 
-src/node_modules
+node_modules/
 src/old.env
 src/frontendREACT/node_modules

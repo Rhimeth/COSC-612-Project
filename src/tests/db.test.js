@@ -10,7 +10,7 @@ Admin: can do all user action in addtion to other actions
 // afterAll(async () => await pool.end());
 // beforeAll(async () => await pool.open());
 
-import pool from "./backend/db.js"; // Importing pool from db.js
+import pool from "../backend/db.js"; // Importing pool from db.js
 
 // AppUser Table Test
 // User: update password, delete their account
@@ -21,7 +21,7 @@ describe("AppUser Table", () => {
     await pool.query("BEGIN");
     await pool.query(
       "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
-      [1, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
+      [9999999, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
     );
   });
 
@@ -63,15 +63,15 @@ describe("SearchHistory Table Operations", () => {
     await pool.query("BEGIN");
     const userRes = await pool.query(
       "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5) RETURNING AppUserID",
-      [1, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
+      [9999999, "testuser@gmail.com", "testuser", "originalpassword", new Date()]
     );
     await pool.query(
       "INSERT INTO SearchHistory (SearchID, AppUserID, SearchTerm, LLMSearch, LLMSearchResult) VALUES ($1, $2, $3, $4, $5)",
-      [1, 1, "eggs", null, null]
+      [9999999, 9999999, "ingredientthatsnotreal10", null, null]
     );
     await pool.query(
       "INSERT INTO SearchHistory (SearchID, AppUserID, SearchTerm, LLMSearch, LLMSearchResult) VALUES ($1, $2, $3, $4, $5)",
-      [2, 1, "fish", null, null]
+      [9999998, 9999999, "ingredientthatsnotreal11", null, null]
     );
   });
 
@@ -80,18 +80,18 @@ describe("SearchHistory Table Operations", () => {
   it("should retrieve all search history", async () => {
     const res = await pool.query(
       "SELECT * FROM SearchHistory WHERE AppUserID = $1",
-      [1]
+      [9999999]
     );
     expect(res.rows.length).toBe(2);
-    expect(res.rows[0].searchterm).toEqual("eggs");
-    expect(res.rows[1].searchterm).toEqual("fish");
+    expect(res.rows[0].searchterm).toEqual("ingredientthatsnotreal10");
+    expect(res.rows[1].searchterm).toEqual("ingredientthatsnotreal11");
   });
 
   it("should delete a SearchHistory record for a user", async () => {
-    await pool.query("DELETE FROM SearchHistory WHERE AppUserID = $1", [1]);
+    await pool.query("DELETE FROM SearchHistory WHERE AppUserID = $1", [9999999]);
     const res = await pool.query(
       "SELECT * FROM SearchHistory WHERE AppUserID = $1",
-      [1]
+      [9999999]
     );
     expect(res.rows.length).toBe(0);
   });
@@ -105,7 +105,7 @@ describe("Tags Table Operations", () => {
     await pool.query("BEGIN");
     await pool.query("INSERT INTO Tags (TagID, Name) VALUES ($1, $2)", [
       1,
-      "spicy",
+      "tagthatisnotreal1",
     ]);
   });
 
@@ -113,10 +113,10 @@ describe("Tags Table Operations", () => {
 
   it("should read the inserted tag", async () => {
     const res = await pool.query("SELECT * FROM Tags WHERE name = $1", [
-      "spicy",
+      "tagthatisnotreal1",
     ]);
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].name).toEqual("spicy");
+    expect(res.rows[0].name).toEqual("tagthatisnotreal1");
   });
 });
 
@@ -127,12 +127,12 @@ describe("Recipe Table", () => {
   beforeEach(async () => {
     await pool.query("BEGIN");
     await pool.query(
-      "INSERT INTO Recipe (RecipeID, Directions, Description, Title) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO Recipe (RecipeID, Directions, measurementingredient, Title) VALUES ($1, $2, $3, $4)",
       [
-        1,
+        9999999,
         "Mix ingredients in a pan, bake at 425",
-        "A basic cake recipe",
-        "Cake",
+        "A basic testfoodthatisntreal recipe",
+        "testfoodthatisntreal",
       ]
     );
   });
@@ -140,27 +140,27 @@ describe("Recipe Table", () => {
 
   it("should retrieve a Recipe", async () => {
     const res = await pool.query("SELECT * FROM Recipe WHERE Title = $1", [
-      "Cake",
+      "testfoodthatisntreal",
     ]);
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].title).toEqual("Cake");
+    expect(res.rows[0].title).toEqual("testfoodthatisntreal");
   });
 
-  it("should update a Recipe's description", async () => {
-    await pool.query("UPDATE Recipe SET Description = $1 WHERE Title = $2", [
-      "A classic cake recipe",
-      "Cake",
+  it("should update a Recipe's measurementingredient", async () => {
+    await pool.query("UPDATE Recipe SET measurementingredient = $1 WHERE Title = $2", [
+      "A classic testfoodthatisntreal recipe",
+      "testfoodthatisntreal",
     ]);
     const res = await pool.query("SELECT * FROM Recipe WHERE Title = $1", [
-      "Cake",
+      "testfoodthatisntreal",
     ]);
-    expect(res.rows[0]).toHaveProperty("description", "A classic cake recipe");
+    expect(res.rows[0]).toHaveProperty("measurementingredient", "A classic testfoodthatisntreal recipe");
   });
 
   it("should delete a Recipe", async () => {
-    await pool.query("DELETE FROM Recipe WHERE Title = $1", ["Cake"]);
+    await pool.query("DELETE FROM Recipe WHERE Title = $1", ["testfoodthatisntreal"]);
     const res = await pool.query("SELECT * FROM Recipe WHERE Title = $1", [
-      "Cake",
+      "testfoodthatisntreal",
     ]);
     expect(res.rows.length).toBe(0);
   });
@@ -174,7 +174,7 @@ describe("Ingredient Table", () => {
     await pool.query("BEGIN");
     await pool.query(
       "INSERT INTO Ingredient (IngredientID, Name) VALUES ($1, $2)",
-      [1, "Flour"]
+      [9999999, "ingredientthatsnotreal1"]
     );
   });
 
@@ -182,27 +182,27 @@ describe("Ingredient Table", () => {
 
   it("should retrieve an Ingredient", async () => {
     const res = await pool.query("SELECT * FROM Ingredient WHERE Name = $1", [
-      "Flour",
+      "ingredientthatsnotreal1",
     ]);
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].name).toEqual("Flour");
+    expect(res.rows[0].name).toEqual("ingredientthatsnotreal1");
   });
 
   it("should update an Ingredient's name", async () => {
     await pool.query("UPDATE Ingredient SET Name = $1 WHERE Name = $2", [
-      "Whole Wheat Flour",
-      "Flour",
+      "Whole Wheat ingredientthatsnotreal1",
+      "ingredientthatsnotreal1",
     ]);
     const res = await pool.query("SELECT * FROM Ingredient WHERE Name = $1", [
-      "Whole Wheat Flour",
+      "Whole Wheat ingredientthatsnotreal1",
     ]);
-    expect(res.rows[0]).toHaveProperty("name", "Whole Wheat Flour");
+    expect(res.rows[0]).toHaveProperty("name", "Whole Wheat ingredientthatsnotreal1");
   });
 
   it("should delete an Ingredient", async () => {
-    await pool.query("DELETE FROM Ingredient WHERE Name = $1", ["Flour"]);
+    await pool.query("DELETE FROM Ingredient WHERE Name = $1", ["ingredientthatsnotreal1"]);
     const res = await pool.query("SELECT * FROM Ingredient WHERE Name = $1", [
-      "Flour",
+      "ingredientthatsnotreal1",
     ]);
     expect(res.rows.length).toBe(0);
   });
@@ -217,17 +217,17 @@ describe("Favorites Table", () => {
 
     await pool.query(
       "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
-      [1, "testuser@gmail.com", "testuser", "testpass", new Date()]
+      [9999999, "testuser@gmail.com", "testuser", "testpass", new Date()]
     );
 
     await pool.query(
-      "INSERT INTO Recipe (RecipeID, Directions, Description, Title) VALUES ($1, $2, $3, $4)",
-      [1, "Mix well", "A delicious cake", "Cake"]
+      "INSERT INTO Recipe (RecipeID, Directions, measurementingredient, Title) VALUES ($1, $2, $3, $4)",
+      [9999999, "Mix well", "A delicious testfoodthatisntreal", "testfoodthatisntreal"]
     );
 
     await pool.query(
       "INSERT INTO Favorites (AppUserID, RecipeID, Favorited_At) VALUES ($1, $2, $3)",
-      [1, 1, new Date()]
+      [9999999, 9999999, new Date()]
     );
   });
 
@@ -236,20 +236,20 @@ describe("Favorites Table", () => {
   it("should retrieve a Favorite by AppUserID", async () => {
     const res = await pool.query(
       "SELECT * FROM Favorites WHERE AppUserID = $1",
-      [1]
+      [9999999]
     );
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].appuserid).toEqual(1);
+    expect(res.rows[0].appuserid).toEqual(9999999);
   });
 
   it("should delete a Favorite", async () => {
     await pool.query(
       "DELETE FROM Favorites WHERE AppUserID = $1 AND RecipeID = $2",
-      [1, 1]
+      [9999999, 9999999]
     );
     const res = await pool.query(
       "SELECT * FROM Favorites WHERE AppUserID = $1 AND RecipeID = $2",
-      [1, 1]
+      [9999999, 9999999]
     );
     expect(res.rows.length).toBe(0);
   });
@@ -264,17 +264,17 @@ describe("UserRecipes Table", () => {
     // Insert necessary data into AppUser
     await pool.query(
       "INSERT INTO AppUser (AppUserID, email, Username, Password, Created_At) VALUES ($1, $2, $3, $4, $5)",
-      [1, "testuser@gmail.com", "testuser", "testpass", new Date()]
+      [9999999, "testuser@gmail.com", "testuser", "testpass", new Date()]
     );
     // Insert necessary data into Recipe
     await pool.query(
-      "INSERT INTO Recipe (RecipeID, Directions, Description, Title) VALUES ($1, $2, $3, $4)",
-      [1, "Mix well", "A delicious stew", "Stew"]
+      "INSERT INTO Recipe (RecipeID, Directions, measurementingredient, Title) VALUES ($1, $2, $3, $4)",
+      [9999999, "Mix well", "A delicious stew", "Stew"]
     );
     // Now insert into UserRecipes
     await pool.query(
       "INSERT INTO UserRecipes (AppUserID, RecipeID, Uploaded_At) VALUES ($1, $2, $3)",
-      [1, 1, new Date()]
+      [9999999, 9999999, new Date()]
     );
   });
 
@@ -283,20 +283,20 @@ describe("UserRecipes Table", () => {
   it("should retrieve a UserRecipe by AppUserID", async () => {
     const res = await pool.query(
       "SELECT * FROM UserRecipes WHERE AppUserID = $1",
-      [1]
+      [9999999]
     );
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].appuserid).toEqual(1);
+    expect(res.rows[0].appuserid).toEqual(9999999);
   });
 
   it("should delete a UserRecipe", async () => {
     await pool.query(
       "DELETE FROM UserRecipes WHERE AppUserID = $1 AND RecipeID = $2",
-      [1, 1]
+      [9999999, 9999999]
     );
     const res = await pool.query(
       "SELECT * FROM UserRecipes WHERE AppUserID = $1 AND RecipeID = $2",
-      [1, 1]
+      [9999999, 9999999]
     );
     expect(res.rows.length).toBe(0);
   });

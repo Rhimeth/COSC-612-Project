@@ -6,8 +6,8 @@
 
 // The database is currently mocked, but still properly tests the functions
 
-import exploreSimilarRecipes from "./backend/exploresimilar.js";
-import pool from "./backend/db.js";
+import exploreSimilarRecipes from "../backend/exploresimilar.js";
+import pool from "../backend/db.js";
 
 // TODO Right now the query will return the item that you were also search for, this will change later
 
@@ -20,7 +20,7 @@ describe("exploreSimilarRecipes", () => {
     // to the new rows, which we can reuse. So we collect the IDs, then use them for the junction table.
 
     const recipeInsertQuery = `
-            INSERT INTO recipe (title, directions, description) 
+            INSERT INTO recipe (title, directions, measurementingredient) 
             VALUES ($1, $2, $3), ($4, $5, $6) 
             RETURNING recipeid;`;
 
@@ -30,20 +30,20 @@ describe("exploreSimilarRecipes", () => {
             RETURNING ingredientid;`;
 
     const recipeResults = await pool.query(recipeInsertQuery, [
-      "Cake",
+      "testfoodthatisntreal",
       "Mix ingredients... blah.",
-      "A nice cake",
-      "Cookies",
+      "A nice testfoodthatisntreal",
+      "testfoodthatisntreal2",
       "Mix ingredients ...",
-      "Tasty cookies",
+      "Tasty testfoodthatisntreal2",
     ]);
     const ingredientResults = await pool.query(ingredientInsertQuery, [
-      "Sugar",
-      "Butter",
-      "Wheat",
-      "Eggs",
-      "Milk",
-      "Cocoa Powder",
+      "ingredientnotreal1",
+      "ingredientnotreal2",
+      "ingredientnotreal3",
+      "ingredientnotreal4",
+      "ingredientnotreal5",
+      "ingredientnotreal6",
     ]);
 
     const recipeIds = recipeResults.rows.map((row) => row.recipeid);
@@ -77,17 +77,17 @@ describe("exploreSimilarRecipes", () => {
   });
 
   it("should return recipes correctly for valid title and ingredients, including similar recipes", async () => {
-    const result = await exploreSimilarRecipes("cake", [
-      "wheat",
-      "sugar",
-      "eggs",
-      "butter",
-      "milk",
-      "cocoa powder",
+    const result = await exploreSimilarRecipes("testfoodthatisntreal", [
+      "ingredientnotreal3",
+      "ingredientnotreal1",
+      "ingredientnotreal4",
+      "ingredientnotreal2",
+      "ingredientnotreal5",
+      "ingredientnotreal6",
     ]);
 
     //expect(result.length).toBe(2);
-    expect(result).toEqual(["cake", "cookies"]);
+    expect(result).toEqual(["testfoodthatisntreal", "testfoodthatisntreal2"]);
   });
 
   it("should throw an error if both title and ingredients are empty", async () => {
@@ -97,7 +97,7 @@ describe("exploreSimilarRecipes", () => {
   });
 
   it("should throw an error if ingredients are not an array", async () => {
-    await expect(exploreSimilarRecipes("", "wheat")).rejects.toThrow(
+    await expect(exploreSimilarRecipes("", "ingredientnotreal3")).rejects.toThrow(
       "Both title and ingredients can't be empty"
     );
   });
@@ -105,7 +105,7 @@ describe("exploreSimilarRecipes", () => {
   it("should throw an error when the title is too long", async () => {
     const longTitle =
       "Title to a food that is too many characters, no title is this long so something went wrong";
-    await expect(exploreSimilarRecipes(longTitle, ["sugar"])).rejects.toThrow(
+    await expect(exploreSimilarRecipes(longTitle, ["ingredientnotreal1"])).rejects.toThrow(
       "Title shouldn't be greater than 50 characters"
     );
   });
@@ -120,22 +120,22 @@ Incoroporated into above tests
 // Dummy data for CORRECT input
 // const dummyRecipeCorrect = [
 //   {
-//     title: "cake",
-//     ingredients: ["wheat", "sugar", "eggs", "butter", "milk", "cocoa poweder"],
+//     title: "testfoodthatisntreal",
+//     ingredients: ["ingredientnotreal3", "ingredientnotreal1", "ingredientnotreal4", "ingredientnotreal2", "ingredientnotreal5", "cocoa poweder"],
 //   },
 // ];
 
 // const dummyNoTitle = [
 //   {
 //     title: "",
-//     ingredients: ["wheat", "sugar", "eggs", "butter", "milk", "cocoa poweder"],
+//     ingredients: ["ingredientnotreal3", "ingredientnotreal1", "ingredientnotreal4", "ingredientnotreal2", "ingredientnotreal5", "cocoa poweder"],
 //   },
 // ];
 
 // const dummyNoIngredients = [
 //   {
 //     title: "",
-//     ingredients: ["wheat", "sugar", "eggs", "butter", "milk", "cocoa poweder"],
+//     ingredients: ["ingredientnotreal3", "ingredientnotreal1", "ingredientnotreal4", "ingredientnotreal2", "ingredientnotreal5", "cocoa poweder"],
 //   },
 // ];
 
@@ -150,7 +150,7 @@ Incoroporated into above tests
 // const dummyRecipeNoTitleNoIngredients2 = [
 //   {
 //     title: "",
-//     ingredients: "wheat",
+//     ingredients: "ingredientnotreal3",
 //   },
 // ];
 
