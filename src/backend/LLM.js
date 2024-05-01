@@ -2,51 +2,51 @@
 Currently setup to work with OpenAI's API
 */
 
-import OpenAI from "openai";
+import OpenAI from 'openai';
 import dotenv from "dotenv";
 
 dotenv.config();
 
-let instance;
 
 class LLM {
   // Attributes
   promptAndResponse = new Map()
   model = "gpt-3.5-turbo" // Set the model
-  // eslint-disable-next-line no-undef
-  apiKey = process.env["OPEN_API_KEY"] // Set API key
   temperature = 0 // deterministic
+  max_tokens = 250
 
 
   // Singleton pattern
   constructor() {
-    if (instance) {
-      return instance; // Stops attempt from creating new instance
+    console.log('LLM constructor called')
+    if (!LLM.instance) {
+      this.openai = new OpenAI({
+          // eslint-disable-next-line no-undef
+        apiKey: process.env.OPENAI_API_KEY
+      });
     } else {
-      instance = this;
+      console.log('returning instance')
     }
-    
-
-    // eslint-disable-next-line no-unused-vars
-    const openai = new OpenAI({
-      organization: "org-FzyqOvlHfNso0q3MLanLBMIC",
-      project: "proj_bn69z1YXucu7oqp3bPmGglRz",
-      apiKey: this.apiKey,
-    });
   }
 
   getInstance(){
-    if (instance) {
-      return instance;
+    if (!LLM.instance) {
+      new LLM();
     }
-    return new LLM();
+    return LLM.instance;
   }
+
+
+
 
   // API Call
   async query(prompt) {
     try {
-      const response = await this.__callLLM(prompt);
-      this.promptAndResponse.set(prompt, response);
+      console.log('Entering try block in LLM class of query()')
+      const response = await this.__callLLM(prompt)
+      this.promptAndResponse.set(prompt, response)
+      console.log('Successfully finished try block')
+      return response
     } catch (error) {
       console.error("Query failed:", error);
       return null;
@@ -66,13 +66,17 @@ class LLM {
       throw new Error("Prompt must be more than 10 characters");
     }
     try {
-      const chatComplettion = await this.openai.chat.completions.create({
-        messages: [{ role: "user", content: "Say this is a test" }],
+      console.log('Entering try block in LLM class of __callLLM()')
+      const completion = await this.openai.chat.completions.create({
+        messages: [{ role: "user", content: prompt.concat(" Always respond with 1 paragraph and then always end your reponse with at least 5 **real** recipes having to do with what the user describes to you. They may describe flavors, situations, moods, ect, and your angle is always supposed to be recipe and culinary focused. Remember to end your reponse with 5 **real** recipe titles. The recipes should have to do with what the user discussed.") }],
         model: this.model,
         temperature: this.temperature,
+        max_tokens: this.max_tokens,
+        token_limit: this.token_limit
       });
 
-      return chatComplettion.data.choices[0].text.trim();
+      console.log(completion.choices[0].message);
+      return completion.choices[0].message
     } catch (error) {
       console.error("Failed to get response from LLM: ", error);
       throw error;
