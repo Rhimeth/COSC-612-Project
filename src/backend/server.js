@@ -68,18 +68,18 @@ app.get("/database/titlesearch", async (req, res) => {
 });
 
 // LLM Search
-app.get("/database/llmsearch"),
-  async (req, res) => {
+app.get("/database/llmsearch", async (req, res) => {
     try {
-      console.log("At backend LLM try block");
-      const prompt = req.query.q;
-      const results = await llm.query(prompt);
-      res.json(results.rows);
+      console.log("At backend /llmsearch try block")
+      const prompt = req.query.q
+      const results = await llm.query(prompt)
+      console.log(results)
+      res.json(results)
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Server error");
+      res.status(500).send("Server error")
     }
-  };
+  });
 
 /*
 POST Requests

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "start": "node ./backend/server.js && npm run vite",
+    "start": "powershell -Command \"Start-Job -ScriptBlock {node ./src/backend/server.js}; Start-Job -ScriptBlock {npm run vite}\"",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -34,7 +34,8 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "sloc": "^0.3.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

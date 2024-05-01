@@ -1,4 +1,4 @@
-/* Overall */
+
 
 * {
   box-sizing: border-box;
@@ -7,6 +7,9 @@
 body {
   margin: 0;
   background-color: #333;
+  font-family: 'Roboto';
+  color: rgb(235, 235, 235);
+  
 }
 
 .main-content {
@@ -101,8 +104,6 @@ body {
 .super-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
   gap: 1rem; 
   background-color: rgba(136, 255, 103, 0.127);
   width: 100%; 
@@ -112,8 +113,6 @@ body {
 .search-container {
   display: flex;
   flex-direction: row; 
-  align-items: center;
-  justify-content: space-around;
   width: 100%;
   padding: 1rem; 
   background-color: rgba(99, 255, 109, 0.102);
@@ -129,34 +128,27 @@ body {
   max-width: 80rem; 
 }
 
-.search-input {
-  padding: 0.75rem;
-  border: 0.1rem solid #000000;
-}
-
-.wide-input {
-  min-width: 300px;
-}
-
-.wide-textarea {
-  min-width: 300px;
-  height: 150px;
-  resize: vertical;
-}
-
-
-.results-container {
+.title-search-results {
   display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: space-around;
-  max-width: 80rem;
-  padding: 1rem; 
-  gap: 1rem; 
-  background-color: rgba(73, 255, 2, 0.192);
-  margin: auto;
+  flex-wrap: wrap;
+  justify-content: space-around; 
 }
-    
+
+.recipe-card-container {
+  width: 300px;
+  height: 200px; 
+  margin: 10px;  
+  overflow: hidden; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s ease-in-out; 
+}
+
+.recipe-card-container:hover {
+  transform: scale(1.05); 
+}
+
 
 /*Search Buttons*/
 /* These are now MUI buttons on search.jsx */
@@ -165,18 +157,18 @@ body {
 /* Results */
 .card-container {
   display: flex;
-  justify-content: space-evenly;
   flex-wrap: wrap;
-  padding: 10px;
-  margin-top: 1rem;
+  justify-content: flex-start; /* Aligns items to the start of the container */
+  align-items: center; /* Centers items vertically */
 }
 
 .card-button {
-  width: 300px;
+  width: 100px;
   height: 100px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: row;
+  align-items: row;
   color: black;
   font-size: 1rem;
   transition: all 0.2s;
@@ -198,4 +190,8 @@ body {
   font-weight: bold;
   margin: auto;
 
+}
+
+.llm-results-content {
+  text-align: left /* Overrides parent centering for this element */
 }

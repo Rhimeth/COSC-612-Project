@@ -1,52 +1,40 @@
 import { useState } from "react";
 import * as Buttons from "@mui/material";
 import * as Icons from "@mui/icons-material";
-import Box from "@mui/material/Box";
+//TODO used instead of div import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
+import LLMResults from "../components/LLMResults";
+
+import RecipeCard from "../components/RecipeCard";
 
 import "../styles.css";
 
 const buttonStyle = {
   backgroundColor: "green",
   color: "white",
-  padding: "8px 16px", // Vertical and horizontal padding (commonly used for button padding)
-  margin: "10px", // Margin around the button to ensure it doesn't touch other elements
-  borderRadius: "4px", // Rounded corners, a common design choice for modern buttons
-  textTransform: "none", // By default, MUI buttons are uppercase; setting to 'none' keeps text as is
-  fontWeight: "bold", // Makes the button text bold, which is common for readability
+  padding: "0.5rem 1rem",
+  margin: "10px",
+  borderRadius: "0.25rem",
+  textTransform: "none",
+  fontWeight: "bold",
   "&:hover": {
-    backgroundColor: "darkgreen", // Slightly darker green on hover for a subtle interaction effect
+    backgroundColor: "darkgreen",
   },
   "&:active": {
-    backgroundColor: "#005700", // Even darker green when the button is clicked
-    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)", // Optional: Inner shadow to simulate a pressed button
+    backgroundColor: "#005700",
+    boxShadow: "inset 0 0.125rem 0.25rem rgba(0,0,0,0.1)",
   },
   "&:disabled": {
-    backgroundColor: "#cccccc", // Greyed out background for disabled state
-    color: "#666666", // Greyed out text color for disabled state
+    backgroundColor: "#cccccc",
+    color: "#666666",
   },
 };
 
 const textboxStyle = {
-  width: "20rem",
+  width: "30rem",
   backgroundColor: "white",
 };
-
-function CustomDivider() {
-  return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Box
-        sx={{
-          height: "100%", // Adjust based on your layout needs
-          width: "20px", // Thickness of the line
-          backgroundColor: "grey", // Color of the line
-          margin: "0 20px", // Spacing around the line
-        }}
-      />
-    </div>
-  );
-}
 
 export default function Search() {
   // Searching by title
@@ -55,7 +43,7 @@ export default function Search() {
 
   // Search with LLM
   const [llmSearch, setLlmSearch] = useState("");
-  const [llmResults, setLlmResults] = useState([]);
+  const [llmSearchResults, setLlmResults] = useState([]);
 
   // Title Search
   const handleTitleSearch = async () => {
@@ -86,7 +74,7 @@ export default function Search() {
 
   // LLM Search
   const handleLLMSearch = async () => {
-    if (llmSearch.trim().length <= 10) {
+    if (llmSearch.length <= 10) {
       alert("LLM search must be more than 10 characters");
       return;
     } else {
@@ -109,12 +97,15 @@ export default function Search() {
       <div className="search-container">
         <div className="title-search-container">
           <div className="input-group">
-            <input
-              type="text"
+            <TextField
+              singleline
+              rows={3}
+              defaultValue="Default Value"
               placeholder="Enter title here..."
               className="search-input wide-input"
               value={titleSearch}
               onChange={(e) => setTitleSearch(e.target.value)}
+              sx={{ ...textboxStyle, mt: "4rem" }}
             />
           </div>
           <div>
@@ -122,28 +113,41 @@ export default function Search() {
               variant="contained"
               startIcon={<Icons.Search />}
               onClick={handleTitleSearch}
-              sx={buttonStyle}
+              sx={{ ...buttonStyle, mb: "5rem" }}
             >
               Search Title
             </Buttons.Button>
           </div>
+          <div>
+            <h2>--------------Title Results--------------</h2>
+          </div>
           <div className="title-search-results">
-            <p>Title Results</p>
             {titleSearchResults.map((searchResult) => (
-              <div key={searchResult.recipeid} className="card-button">
-                <h3>{searchResult.title}</h3>
+              <div
+                className="recipe-card-container"
+                key={searchResult.recipeid}
+              >
+                <RecipeCard recipe={searchResult} detailed={false} />
               </div>
             ))}
           </div>
         </div>
-        <Divider orientation="vertical" flexItem />
-        <div className="llm-search-container" style={{ flex: 1 }}>
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ width: "1px", bgcolor: "black" }}
+        />
+        <div className="llm-search-container">
           <div className="input-group">
-            <textarea
+            <TextField
+              multiline
+              rows={3}
+              defaultValue="Default Value"
               placeholder="Enter general description of recipe, flavors, desired ingredients, or something else..."
               className="search-input wide-textarea"
               value={llmSearch}
               onChange={(e) => setLlmSearch(e.target.value)}
+              sx={{ ...textboxStyle, mt: "2rem" }}
             />
           </div>
           <div>
@@ -151,23 +155,17 @@ export default function Search() {
               variant="contained"
               startIcon={<Icons.Search />}
               onClick={handleLLMSearch}
-              sx={buttonStyle}
+              sx={{ ...buttonStyle, mb: "4rem" }}
             >
               Search LLM
             </Buttons.Button>
           </div>
           <div className="llm-search-results">
-            <p>LLM Results</p>
-            {llmResults.map((result, index) => (
-              <div key={index} className="text-response">
-                <h3>{result.response}</h3>
-                <p>{result.description}</p>
-              </div>
-            ))}
+            <h2>--------------LLM Results--------------</h2>
+            <LLMResults llmResults={llmSearchResults} />
           </div>
         </div>
       </div>
     </div>
   );
 }
-// TODO change result.response to w/e openai calls it

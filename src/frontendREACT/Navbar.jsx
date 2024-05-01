@@ -15,7 +15,7 @@ export default function Navbar() {
         <CustomLink to="/myrecipes">My Recipes</CustomLink>
         <CustomLink to="/favorites">Favorites</CustomLink>
         <CustomLink to="/search">Search</CustomLink>
-        <CustomLink to="/profile">Profile</CustomLink>
+        <CustomLink to="/recipeview">Recipe View</CustomLink>
       </ul>
     </nav>
   );
