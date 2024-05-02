@@ -1,33 +1,57 @@
-import { useLocation } from "react-router-dom";
 import RecipeCard from "../components/RecipeCard";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
+import Tag from "../components/Tag";
+
 function RecipeView() {
-  const location = useLocation();
-  const recipe = location.state ? location.state.recipe : null;
   const [isFavorited, setIsFavorited] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [loadedRecipe, setLoadedRecipe] = useState(null);
 
   useEffect(() => {
-    checkFavoriteStatus();
+    // Load the recipe from localStorage
+    const recipeData = localStorage.getItem("currentRecipe");
+    if (recipeData) {
+      const parsedRecipe = JSON.parse(recipeData);
+      setLoadedRecipe(parsedRecipe);
+      fetchTags(parsedRecipe.recipeid);
+    }
   }, []);
 
-  if (!recipe) {
-    return (
-      <div>
-        <h1>Click on a recipe from search, favorites, or my recipes.</h1>
-      </div>
-    );
-  }
-
-  // May not implement, have to check if favorited already to fill in
-  const checkFavoriteStatus = async () => {
+  const fetchTags = async (recipeId) => {
+    try {
+      console.log('at try block of fetchTags()')
+      const response = await fetch(
+        `/api/database/tagssearch?recipeId=${recipeId}`
+      );
+      console.log('got back a response')
+      const fetchedTags = await response.json()
+      console.log('going to setTags()')
+      setTags(
+        fetchedTags.map((tag) => ({ ...tag, tagId: parseInt(tag.tagId) }))
+      );
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
+
+  // Search with Explore Similar
+  // const [exploreSimilarSearch, setexploreSimilarSearch] = useState("");
+  // const [exploreSimilarSearchResults, setexploreSimilarSearchResults] = useState("");
+
+  // useEffect(() => {
+  //   //checkFavoriteStatus();
+  // }, []);
+
+  // // May not implement, have to check if favorited already to fill in
+  // const checkFavoriteStatus = async () => {
+  // };
 
   const toggleFavorite = async () => {
     setIsFavorited(!isFavorited);
@@ -40,7 +64,7 @@ function RecipeView() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ recipeId: recipe.recipeid, appUserId: 1 }),
+        body: JSON.stringify({ recipeId: loadedRecipe.recipeid, appUserId: 1 }),
       });
       if (!response.ok) throw new Error("error");
     } catch (error) {
@@ -48,23 +72,24 @@ function RecipeView() {
     }
   };
 
-  const exploreSimilar = async () => {
+  const handleExploreSimilar = async () => {
+    console.log("Entering handleExploreSimilar");
+
     try {
-      const response = await fetch("/api/database/exploresimilar", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: recipe.title,
-          ingredients: recipe.ingredients,
-        }),
-      });
-      if (!response.ok) throw new Error("error");
+      console.log("weeeeeeee");
+      // put exploreSimilar(
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Unable to fetch data due to", error);
     }
   };
+
+  if (!loadedRecipe) {
+    return (
+      <div>
+        <h1>Click on a recipe from search, favorites, or my recipes.</h1>
+      </div>
+    );
+  }
 
   return (
     <Box
@@ -76,19 +101,21 @@ function RecipeView() {
         padding: "0 20px",
       }}
     >
-      <RecipeCard recipe={recipe} detailed={true} />
+      <RecipeCard recipe={loadedRecipe} detailed={true} />
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          paddingRight: "1rem",
           paddingTop: "1rem",
         }}
       >
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", marginY: 2 }}>
+                {tags.map(tag => <Tag key={tag.tagId} tag={tag} />)}
+            </Box>
         <IconButton
           onClick={toggleFavorite}
           color="error"
-          sx={{ mb: 2, fontSize: "6rem" }}
+          sx={{ mb: 2, fontSize: "6rem", ml: 'auto', mr: 'auto' }}
         >
           {isFavorited ? (
             <FavoriteIcon fontSize="inherit" />
@@ -98,8 +125,8 @@ function RecipeView() {
         </IconButton>
         <Button
           variant="contained"
-          onClick={exploreSimilar}
-          sx={{ width: "fit-content" }}
+          onClick={handleExploreSimilar}
+          sx={{ml: 'auto', mr: 'auto' }}
         >
           Explore Similar
         </Button>

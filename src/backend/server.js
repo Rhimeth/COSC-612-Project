@@ -9,11 +9,11 @@ The server is currently listening on port 3000
 import express from "express"; // Express
 import pool from "./db.js"; // Importing pool from db
 import LLM from "./LLM.js";
+import exploreSimilarRecipes from "./exploresimilar.js";
 
 const llm = new LLM();
 const app = express();
 const port = 3000;
-
 
 // Starts server on port 3000
 console.log("Starting the server...");
@@ -33,11 +33,74 @@ app.get("/", (req, res) => {
   res.send("sucessful GET request");
 });
 
+// LLM Search
+app.get("/database/tagssearch", async (req, res) => {
+  
+  const recipeId = req.query.recipeId
+
+  const query = `
+        SELECT DISTINCT t.name, t.tagid
+        FROM tags t
+        JOIN ingredienttags it ON it.tagid = t.tagid
+        JOIN recipeingredients ri ON ri.ingredientid = it.ingredientid
+        JOIN recipe r ON ri.recipeid = r.recipeid
+        WHERE r.recipeid = $1
+    `;
+
+  try {
+    console.log("At backend /taggsearch try block");
+    const results = await pool.query(query, [recipeId])
+    res.json(results.rows.map((row) => ({ name: row.name, tagId: row.tagid })));
+  } catch (error) {
+    console.error("Failed to fetch tags:", error);
+    res.status(500).send("Error fetching tags");
+  }
+});
+
+// LLM Search
+app.get("/database/llmsearch", async (req, res) => {
+  try {
+    console.log("At backend /llmsearch try block");
+    const prompt = req.query.q;
+    const results = await llm.query(prompt);
+    console.log(results);
+    res.json(results);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Explore Similar
+app.get("/database/exploresimilar", async (req, res) => {
+  try {
+    console.log("At backend /explorersimilar try block");
+    //const prompt = req.query.q;
+    const results = await exploreSimilarRecipes();
+    console.log(results);
+    res.json(results);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // Title Search
 app.get("/database/titlesearch", async (req, res) => {
+  // This setup gives priority to exact matching, then matching 4 words, 3, words, ect
   const searchTitle = req.query.q;
-  const searchWords = searchTitle.split(/\s+/); // So we can search by words
-  const searchPattern = searchWords.join("|"); // recombine to match 2 or 3
+  const searchWords = searchTitle.split(/\s+/);
+  const twoWordPatterns = searchWords
+    .map((_, i, arr) => arr[i] + " " + arr[i + 1])
+    .filter(Boolean);
+  const threeWordPatterns = searchWords
+    .map((_, i, arr) => arr[i] + " " + arr[i + 1] + " " + arr[i + 2])
+    .filter(Boolean);
+  const searchPattern = [
+    ...threeWordPatterns,
+    ...twoWordPatterns,
+    ...searchWords,
+  ].join("|");
 
   const sqlTitleSearch = `
       SELECT r.RecipeID, r.Title, r.directions, r.measurementingredient,
@@ -54,32 +117,32 @@ app.get("/database/titlesearch", async (req, res) => {
   try {
     console.log("made it to the backend try statement");
     const results = await pool.query(sqlTitleSearch, [
-      `%${searchTitle}%`,
+      `%${searchTitle}%`, // Exact title match
       searchPattern,
     ]);
     console.log("just finished query, going to send response");
     console.log(results.rows);
-    res.json(results.rows)
+    res.json(results.rows);
     console.log("response sent");
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Server error");
+    res.status(500).send("Server error in responding to title search");
   }
 });
 
 // LLM Search
 app.get("/database/llmsearch", async (req, res) => {
-    try {
-      console.log("At backend /llmsearch try block")
-      const prompt = req.query.q
-      const results = await llm.query(prompt)
-      console.log(results)
-      res.json(results)
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Server error")
-    }
-  });
+  try {
+    console.log("At backend /llmsearch try block");
+    const prompt = req.query.q;
+    const results = await llm.query(prompt);
+    console.log(results);
+    res.json(results);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
 
 /*
 POST Requests
@@ -157,5 +220,3 @@ app.post("/login", async (req, res) => {
     res.status(500).send("Server error during login");
   }
 });
-
-
