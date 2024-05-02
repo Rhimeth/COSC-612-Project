@@ -1,3 +1,5 @@
+
+import { Typography, Box } from '@mui/material';
 import { useState } from "react";
 import * as Buttons from "@mui/material";
 import * as Icons from "@mui/icons-material";
@@ -93,7 +95,14 @@ export default function Search() {
   };
 
   return (
+    
     <div className="super-container">
+      <Box className="myrecipes" sx={{ flexGrow: 1, padding: 3 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                Favorites
+            </Typography>
+            
+        </Box>
       <div className="search-container">
         <div className="title-search-container">
           <div className="input-group">
@@ -169,3 +178,5 @@ export default function Search() {
     </div>
   );
 }
+
+

@@ -8,6 +8,9 @@ export default function Navbar() {
   return (
     <nav className="nav">
       <Link to="/home" className="site-title">
+        {/* Can put icon here... or not whatever
+      <img src="https://inside.towson.edu/brandAssets/common/downloads/brandmarks/png/TowsonUlogo-horiz-color-pos.png" alt="Towson University Logo" style={{ verticalAlign: 'middle' }} />
+        */}
         Flavor Formulas
       </Link>
       <ul>
