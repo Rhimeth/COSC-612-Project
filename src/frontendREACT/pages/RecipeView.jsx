@@ -6,7 +6,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import { Typography} from '@mui/material';
+import { Typography } from "@mui/material";
 import Tag from "../components/Tag";
 
 function RecipeView() {
@@ -16,24 +16,24 @@ function RecipeView() {
 
   useEffect(() => {
     // Load the recipe from localStorage
-    const recipeData = localStorage.getItem("currentRecipe")
+    const recipeData = localStorage.getItem("currentRecipe");
     if (recipeData) {
-      const parsedRecipe = JSON.parse(recipeData)
-      setLoadedRecipe(parsedRecipe)
-      fetchTags(parsedRecipe.recipeid)
-      checkFavoriteStatus(parsedRecipe.recipeid)
+      const parsedRecipe = JSON.parse(recipeData);
+      setLoadedRecipe(parsedRecipe);
+      fetchTags(parsedRecipe.recipeid);
+      checkFavoriteStatus(parsedRecipe.recipeid);
     }
   }, []);
 
   const fetchTags = async (recipeId) => {
     try {
-      console.log('at try block of fetchTags()')
+      console.log("at try block of fetchTags()");
       const response = await fetch(
         `/api/database/tagssearch?recipeId=${recipeId}`
       );
-      console.log('got back a response')
-      const fetchedTags = await response.json()
-      console.log('going to setTags()')
+      console.log("got back a response");
+      const fetchedTags = await response.json();
+      console.log("going to setTags()");
       setTags(
         fetchedTags.map((tag) => ({ ...tag, tagId: parseInt(tag.tagId) }))
       );
@@ -50,21 +50,19 @@ function RecipeView() {
   //   //checkFavoriteStatus();
   // }, []);
 
+  const checkFavoriteStatus = async (recipeId) => {
+    try {
+      const response = await fetch(
+        `/api/database/checkfavorite?recipeId=${recipeId}&appUserId=1`
+      );
+      if (!response.ok) throw new Error("Failed to check favorite status");
 
-const checkFavoriteStatus = async (recipeId) => {
-  try {
-    const response = await fetch(`/api/database/checkfavorite?recipeId=${recipeId}&appUserId=1`);
-    if (!response.ok) throw new Error("Failed to check favorite status");
-
-    const data = await response.json();
-    setIsFavorited(data.isFavorited); // Assume the backend sends back { isFavorited: true/false }
-  } catch (error) {
-    console.error("Error checking favorite status:", error);
-  }
-};
-
-
-
+      const data = await response.json();
+      setIsFavorited(data.isFavorited); // Assume the backend sends back { isFavorited: true/false }
+    } catch (error) {
+      console.error("Error checking favorite status:", error);
+    }
+  };
 
   const toggleFavorite = async () => {
     const favoritedStatus = !isFavorited;
@@ -84,7 +82,7 @@ const checkFavoriteStatus = async (recipeId) => {
     } catch (error) {
       console.error("Error:", error);
     }
-};
+  };
 
   const handleExploreSimilar = async () => {
     console.log("Entering handleExploreSimilar");
@@ -106,7 +104,6 @@ const checkFavoriteStatus = async (recipeId) => {
   }
 
   return (
-    
     <Box
       sx={{
         display: "flex",
@@ -117,10 +114,10 @@ const checkFavoriteStatus = async (recipeId) => {
       }}
     >
       <Box className="myrecipes" sx={{ flexGrow: 1, padding: 3 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Recipe View
-            </Typography>
-        </Box>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Recipe View
+        </Typography>
+      </Box>
       <RecipeCard recipe={loadedRecipe} detailed={true} />
       <Box
         sx={{
@@ -130,12 +127,14 @@ const checkFavoriteStatus = async (recipeId) => {
         }}
       >
         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", marginY: 2 }}>
-                {tags.map(tag => <Tag key={tag.tagId} tag={tag} />)}
-            </Box>
+          {tags.map((tag) => (
+            <Tag key={tag.tagId} tag={tag} />
+          ))}
+        </Box>
         <IconButton
           onClick={toggleFavorite}
           color="error"
-          sx={{ mb: 2, fontSize: "6rem", ml: 'auto', mr: 'auto' }}
+          sx={{ mb: 2, fontSize: "6rem", ml: "auto", mr: "auto" }}
         >
           {isFavorited ? (
             <FavoriteIcon fontSize="inherit" />
@@ -146,7 +145,7 @@ const checkFavoriteStatus = async (recipeId) => {
         <Button
           variant="contained"
           onClick={handleExploreSimilar}
-          sx={{ml: 'auto', mr: 'auto' }}
+          sx={{ ml: "auto", mr: "auto" }}
         >
           Explore Similar
         </Button>

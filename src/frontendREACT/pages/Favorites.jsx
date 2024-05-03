@@ -9,7 +9,6 @@ import { Typography } from "@mui/material";
 
 function Favorites() {
   const [allFavorites, setAllFavorites] = useState([]);
-  
 
   useEffect(() => {
     fetchAllFavorites(1); // TODO AppuserID is hard coded
@@ -78,7 +77,7 @@ function Favorites() {
         >
           <RecipeCard recipe={recipe} detailed={true} />
           <IconButton
-            onClick={() => toggleFavorite(recipe.recipeid, index)} 
+            onClick={() => toggleFavorite(recipe.recipeid, index)}
             color="error"
             sx={{ fontSize: "6rem", marginTop: 2 }}
           >

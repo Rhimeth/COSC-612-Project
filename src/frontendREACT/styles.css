@@ -1,5 +1,3 @@
-
-
 * {
   box-sizing: border-box;
 }
@@ -7,9 +5,8 @@
 body {
   margin: 0;
   background-color: #333;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   color: rgb(235, 235, 235);
-  
 }
 
 .main-content {
@@ -33,7 +30,6 @@ body {
 }
 
 /* Nav bar */
-
 
 .nav ul {
   padding: 0;
@@ -108,12 +104,11 @@ body {
 
 /* Search Styling */
 
-
 .search-container {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   width: 100%;
-  padding: 1rem; 
+  padding: 1rem;
   background-color: rgba(99, 255, 109, 0.102);
 }
 
@@ -121,37 +116,35 @@ body {
 .llm-search-container {
   flex: 1; /* each takes half the space parent */
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   padding: 1rem;
-  max-width: 80rem; 
+  max-width: 80rem;
 }
 
 .title-search-results {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around; 
+  justify-content: space-around;
 }
 
 .recipe-card-container {
   width: 300px;
-  height: 200px; 
-  margin: 10px;  
-  overflow: hidden; 
+  height: 200px;
+  margin: 10px;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.1s ease-in-out; 
+  transition: transform 0.1s ease-in-out;
 }
 
 .recipe-card-container:hover {
-  transform: scale(1.05); 
+  transform: scale(1.05);
 }
-
 
 /*Search Buttons*/
 /* These are now MUI buttons on search.jsx */
-
 
 /* Results */
 .card-container {
@@ -188,9 +181,8 @@ body {
   font-size: x-large;
   font-weight: bold;
   margin: auto;
-
 }
 
 .llm-results-content {
-  text-align: left /* Overrides parent centering for this element */
+  text-align: left; /* Overrides parent centering for this element */
 }
