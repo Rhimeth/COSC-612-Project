@@ -26,6 +26,8 @@ function RecipeCard({ recipe: searchResult, detailed = false }) {
     navigate("/recipeview");
     // solution to have recipe be persistent
     localStorage.setItem("currentRecipe", JSON.stringify(searchResult));
+
+    window.location.reload(); // This is a hack to get the page to update the clicked recipe
   };
 
   return (

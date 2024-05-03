@@ -73,10 +73,15 @@ app.get("/database/llmsearch", async (req, res) => {
 // Explore Similar
 app.get("/database/exploresimilar", async (req, res) => {
   try {
-    console.log("At backend /explorersimilar try block");
-    //const prompt = req.query.q
-    const results = await exploreSimilarRecipes();
-    console.log(results);
+    console.log("at backend try of exploresimilar");
+    const { recipeid } = req.query;
+    console.log(recipeid)
+    if (!recipeid) {
+      return res.status(400).json({ error: "No recipe ID provided" });
+    }
+
+    const results = await exploreSimilarRecipes(recipeid);
+    console.log("Matched recipes:", results);
     res.json(results);
   } catch (error) {
     console.error(error.message);
