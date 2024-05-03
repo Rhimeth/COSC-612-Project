@@ -8,22 +8,28 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import Tag from "../components/Tag";
+import useLocalStorageListener from './PageReloadHook';
 
 function RecipeView() {
+  
   const [isFavorited, setIsFavorited] = useState(false);
   const [tags, setTags] = useState([]);
-  const [loadedRecipe, setLoadedRecipe] = useState(null);
+  const [similarRecipes, setSimilarRecipes] = useState([]);
+
+  const loadedRecipe = useLocalStorageListener('currentRecipe');
 
   useEffect(() => {
     // Load the recipe from localStorage
     const recipeData = localStorage.getItem("currentRecipe");
     if (recipeData) {
       const parsedRecipe = JSON.parse(recipeData);
-      setLoadedRecipe(parsedRecipe);
+
       fetchTags(parsedRecipe.recipeid);
       checkFavoriteStatus(parsedRecipe.recipeid);
     }
-  }, []);
+  }, [loadedRecipe]);
+
+  
 
   const fetchTags = async (recipeId) => {
     try {
@@ -86,15 +92,31 @@ function RecipeView() {
 
   const handleExploreSimilar = async () => {
     console.log("Entering handleExploreSimilar");
-
+  
     try {
-      console.log("weeeeeeee");
-      // put exploreSimilar(
+
+      console.log("Loaded recipe: ", loadedRecipe.recipeid)
+      const recipeid = encodeURIComponent(loadedRecipe.recipeid);
+      const url = `/api/database/exploresimilar?recipeid=${recipeid}`;
+  
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      if (!response.headers.get("content-type")?.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(`Expected JSON, got ${text.slice(0, 100)}`); // Shows first 100 chars of the response
+      }
+  
+      const similarRecipes = await response.json();
+      console.log("Fetched similar recipes:", similarRecipes);
+  
+      setSimilarRecipes(similarRecipes); // Update the state with fetched recipes
     } catch (error) {
-      console.error("Unable to fetch data due to", error);
+      console.error("Error:", error);
     }
   };
-
+  
   if (!loadedRecipe) {
     return (
       <div>
@@ -149,6 +171,20 @@ function RecipeView() {
         >
           Explore Similar
         </Button>
+        {similarRecipes.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              marginTop: 2,
+            }}
+          >
+            {similarRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} detailed={false} />
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );
