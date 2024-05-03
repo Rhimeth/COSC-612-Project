@@ -1,9 +1,8 @@
-
-import { Typography, Box } from '@mui/material';
+import { Typography, Box } from "@mui/material";
 import { useState } from "react";
 import * as Buttons from "@mui/material";
 import * as Icons from "@mui/icons-material";
-//TODO used instead of div import Box from "@mui/material/Box";
+//TODO used instead of div import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import LLMResults from "../components/LLMResults";
@@ -95,14 +94,12 @@ export default function Search() {
   };
 
   return (
-    
     <div className="super-container">
       <Box className="myrecipes" sx={{ flexGrow: 1, padding: 3 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Favorites
-            </Typography>
-            
-        </Box>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Search
+        </Typography>
+      </Box>
       <div className="search-container">
         <div className="title-search-container">
           <div className="input-group">
@@ -178,5 +175,3 @@ export default function Search() {
     </div>
   );
 }
-
-

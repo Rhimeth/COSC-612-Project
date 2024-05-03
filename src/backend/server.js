@@ -35,8 +35,7 @@ app.get("/", (req, res) => {
 
 // LLM Search
 app.get("/database/tagssearch", async (req, res) => {
-  
-  const recipeId = req.query.recipeId
+  const recipeId = req.query.recipeId;
 
   const query = `
         SELECT DISTINCT t.name, t.tagid
@@ -49,7 +48,7 @@ app.get("/database/tagssearch", async (req, res) => {
 
   try {
     console.log("At backend /taggsearch try block");
-    const results = await pool.query(query, [recipeId])
+    const results = await pool.query(query, [recipeId]);
     res.json(results.rows.map((row) => ({ name: row.name, tagId: row.tagid })));
   } catch (error) {
     console.error("Failed to fetch tags:", error);
@@ -75,7 +74,7 @@ app.get("/database/llmsearch", async (req, res) => {
 app.get("/database/exploresimilar", async (req, res) => {
   try {
     console.log("At backend /explorersimilar try block");
-    //const prompt = req.query.q;
+    //const prompt = req.query.q
     const results = await exploreSimilarRecipes();
     console.log(results);
     res.json(results);
@@ -112,7 +111,7 @@ app.get("/database/titlesearch", async (req, res) => {
       FROM Recipe r
       WHERE r.Title ILIKE $1 OR r.Title ~* $2
       ORDER BY Priority, r.Title
-      LIMIT 10;`;
+      LIMIT 10`;
 
   try {
     console.log("made it to the backend try statement");
@@ -144,9 +143,95 @@ app.get("/database/llmsearch", async (req, res) => {
   }
 });
 
+app.get("/database/getallfavorites", async (req, res) => {
+  const { appUserId } = req.query;
+  const sql = `
+    SELECT r.* FROM favorites f
+    JOIN recipe r ON f.recipeId = r.recipeId
+    WHERE f.appUserId = $1
+  `;
+
+  try {
+    const result = await pool.query(sql, [appUserId]);
+    if (result.rows.length > 0) {
+      res.json(result.rows);
+    } else {
+      res.status(404).json({ message: "No favorites found" });
+    }
+  } catch (error) {
+    console.error("Error retrieving favorites:", error);
+    res.status(500).json({ error: "Failed to retrieve favorites" });
+  }
+});
+
+// Used by Recipe View page
+app.get("/database/checkfavorite", async (req, res) => {
+  const { recipeId, appUserId } = req.query;
+  const sql = "SELECT 1 FROM favorites WHERE appUserId = $1 AND recipeId = $2";
+
+  try {
+    const result = await pool.query(sql, [appUserId, recipeId]);
+    res.json({ isFavorited: result.rows.length > 0 });
+  } catch (err) {
+    console.error("Error checking favorite status:", err);
+    res.status(500).json({ error: "Failed to check favorite status" });
+  }
+});
+
+// Used by Favorites page
+app.get("/database/getallfavorites", async (req, res) => {
+  const { appUserId } = req.query;
+  const sql = "SELECT recipeId FROM favorites WHERE appUserId = $1";
+
+  try {
+    console.log("At backend /getallfavorite try block");
+    const result = await pool.query(sql, [appUserId]);
+    console.log("query ran, checking length: ", result.rows.length);
+
+    if (result.rows.length > 0) {
+      res.json(result.rows);
+    } else {
+      res.status(404).json({ message: "No favorites found" });
+    }
+  } catch (error) {
+    console.error("Error retrieving favorites:", error);
+    res.status(500).json({ error: "Failed to retrieve favorites" });
+  }
+});
+
 /*
 POST Requests
 */
+
+// Toggling favorites on and off
+
+app.post("/database/addfavorite", async (req, res) => {
+  const { recipeId, appUserId } = req.body;
+  const sql = "INSERT INTO favorites (appUserId, recipeId) VALUES ($1, $2)";
+
+  try {
+    await pool.query(sql, [appUserId, recipeId]);
+    res.json({ message: "favorite added" });
+  } catch (error) {
+    console.error("error adding favorite:", error);
+    res.status(500).json({ error: "Failed to add favorite" });
+  }
+});
+
+app.post("/database/removefavorite", async (req, res) => {
+  const { recipeId, appUserId } = req.body;
+  const sql = "DELETE FROM favorites WHERE appUserId = $1 AND recipeId = $2";
+
+  try {
+    console.log(recipeId, appUserId);
+    await pool.query(sql, [appUserId, recipeId]);
+    res.json({ message: "favorite removed" });
+    console.log("favorite removed");
+  } catch (error) {
+    console.error("error removing favorite:", error);
+    res.status(500).json({ error: "Failed to add favorite" });
+  }
+});
 
 // Registering
 app.post("/register", async (req, res) => {
@@ -193,8 +278,8 @@ app.get("/getUserInfo", async (req, res) => {
     } else {
       res.json({ success: false, message: "User not found" });
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

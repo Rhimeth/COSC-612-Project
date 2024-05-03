@@ -22,7 +22,7 @@ function RecipeCard({ recipe: searchResult, detailed = false }) {
 
   const navigate = useNavigate();
   const handleClick = () => {
-    //navigate('/recipeview', { state: { recipe: searchResult } });
+    //navigate('/recipeview', { state: { recipe: searchResult } })
     navigate("/recipeview");
     // solution to have recipe be persistent
     localStorage.setItem("currentRecipe", JSON.stringify(searchResult));

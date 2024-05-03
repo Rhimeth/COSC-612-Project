@@ -14,29 +14,29 @@ function LLMResults({ llmResults }) {
 
   return (
     <Box className="llm-results-content" mt={2}>
-  <Card style={{ maxWidth: 700, backgroundColor: '#f5f5f5' }}>
-    <CardContent>
-      <Box display="flex" alignItems="center" marginBottom={2}>
-        <Avatar>
-          <AssistantIcon />
-        </Avatar>
-        <Typography variant="h6" component="div" style={{ marginLeft: 10 }}>
-          Culinary Helper
-        </Typography>
-      </Box>
-      <Typography variant="body1" component="p">
-        {llmResults?.content
-          ? llmResults.content.split("\n").map((line, index) => (
-              <React.Fragment key={index}>
-                {line}
-                <br />
-              </React.Fragment>
-            ))
-          : "No content available."}
-      </Typography>
-    </CardContent>
-  </Card>
-</Box>
+      <Card style={{ maxWidth: 700, backgroundColor: "#f5f5f5" }}>
+        <CardContent>
+          <Box display="flex" alignItems="center" marginBottom={2}>
+            <Avatar>
+              <AssistantIcon />
+            </Avatar>
+            <Typography variant="h6" component="div" style={{ marginLeft: 10 }}>
+              Culinary Helper
+            </Typography>
+          </Box>
+          <Typography variant="body1" component="p">
+            {llmResults?.content
+              ? llmResults.content.split("\n").map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))
+              : "No content available."}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 

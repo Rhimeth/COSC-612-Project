@@ -25,12 +25,11 @@ export default function Navbar() {
 }
 
 // Routing
-// This routing is working because when the user clicks a 
+// This routing is working because when the user clicks a
 // link -> updates URL -> <Routes> listens for URL changes ->
 // renders the relavant components. So this isn't explicitly
 // programmed, but is "passed through" the browser changing
 // the URL
-
 
 // CSS based on browser matches the URL from the CustomLink "to" input
 // Also handles the Link it'self with is oun the Routing in App.jsx

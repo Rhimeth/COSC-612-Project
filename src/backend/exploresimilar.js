@@ -34,7 +34,7 @@ async function exploreSimilarRecipes(title, ingredients) {
     JOIN Ingredient ON RecipeIngredients.IngredientID = Ingredient.IngredientID
     WHERE LOWER(Ingredient.Name) = ANY($1)
     GROUP BY Recipe.RecipeID
-    HAVING COUNT(DISTINCT Ingredient.Name) >=3;
+    HAVING COUNT(DISTINCT Ingredient.Name) >=3
   `;
 
   try {
@@ -52,9 +52,9 @@ async function exploreSimilarRecipes(title, ingredients) {
     );
 
     // TODO Query for all data to be sent to frontend
-    //const queryRecipes = `SELECT * FROM Recipe WHERE Title = ANY($1)`;
-    //const finalRes = await pool.query(queryRecipes, [allMatches]);
-    //return finalRes.rows; // Return full rows with recipe data
+    //const queryRecipes = `SELECT * FROM Recipe WHERE Title = ANY($1)`
+    //const finalRes = await pool.query(queryRecipes, [allMatches])
+    //return finalRes.rows // Return full rows with recipe data
 
     // Cause huge problems, everything should be forced lowercase
     const allMatchesLower = new Set(
@@ -64,8 +64,8 @@ async function exploreSimilarRecipes(title, ingredients) {
     const allMatchesArray = [...allMatchesLower];
 
     return allMatchesArray;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
 
     throw new Error("Couldn't execute any queries");
   }
