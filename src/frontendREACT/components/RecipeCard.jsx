@@ -1,32 +1,32 @@
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import PropTypes from "prop-types";
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Typography from "@mui/material/Typography"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemText from "@mui/material/ListItemText"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import PropTypes from "prop-types"
 
-import { useNavigate } from "react-router-dom";
-import { Circle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom"
+import { Circle } from "@mui/icons-material"
 
 function RecipeCard({ recipe: searchResult, detailed = false }) {
   const directions =
     detailed && typeof searchResult.directions === "string"
       ? JSON.parse(searchResult.directions)
-      : searchResult.directions;
+      : searchResult.directions
   const ingredients =
     detailed && typeof searchResult.measurementingredient === "string"
       ? JSON.parse(searchResult.measurementingredient)
-      : searchResult.measurementingredient;
+      : searchResult.measurementingredient
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleClick = () => {
-    //navigate('/recipeview', { state: { recipe: searchResult } });
-    navigate("/recipeview");
+    //navigate('/recipeview', { state: { recipe: searchResult } })
+    navigate("/recipeview")
     // solution to have recipe be persistent
-    localStorage.setItem("currentRecipe", JSON.stringify(searchResult));
-  };
+    localStorage.setItem("currentRecipe", JSON.stringify(searchResult))
+  }
 
   return (
     <Card
@@ -72,7 +72,7 @@ function RecipeCard({ recipe: searchResult, detailed = false }) {
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
 RecipeCard.propTypes = {
   recipe: PropTypes.shape({
@@ -83,6 +83,6 @@ RecipeCard.propTypes = {
     priority: PropTypes.number,
   }).isRequired,
   detailed: PropTypes.bool,
-};
+}
 
-export default RecipeCard;
+export default RecipeCard

@@ -6,7 +6,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-
+import { Typography} from '@mui/material';
 import Tag from "../components/Tag";
 
 function RecipeView() {
@@ -16,11 +16,12 @@ function RecipeView() {
 
   useEffect(() => {
     // Load the recipe from localStorage
-    const recipeData = localStorage.getItem("currentRecipe");
+    const recipeData = localStorage.getItem("currentRecipe")
     if (recipeData) {
-      const parsedRecipe = JSON.parse(recipeData);
-      setLoadedRecipe(parsedRecipe);
-      fetchTags(parsedRecipe.recipeid);
+      const parsedRecipe = JSON.parse(recipeData)
+      setLoadedRecipe(parsedRecipe)
+      fetchTags(parsedRecipe.recipeid)
+      checkFavoriteStatus(parsedRecipe.recipeid)
     }
   }, []);
 
@@ -49,15 +50,28 @@ function RecipeView() {
   //   //checkFavoriteStatus();
   // }, []);
 
-  // // May not implement, have to check if favorited already to fill in
-  // const checkFavoriteStatus = async () => {
-  // };
+
+const checkFavoriteStatus = async (recipeId) => {
+  try {
+    const response = await fetch(`/api/database/checkfavorite?recipeId=${recipeId}&appUserId=1`);
+    if (!response.ok) throw new Error("Failed to check favorite status");
+
+    const data = await response.json();
+    setIsFavorited(data.isFavorited); // Assume the backend sends back { isFavorited: true/false }
+  } catch (error) {
+    console.error("Error checking favorite status:", error);
+  }
+};
+
+
+
 
   const toggleFavorite = async () => {
-    setIsFavorited(!isFavorited);
-    const url = isFavorited
-      ? "/api/database/removeFavorite"
-      : "/api/database/addFavorite";
+    const favoritedStatus = !isFavorited;
+    setIsFavorited(favoritedStatus);
+    const url = favoritedStatus
+      ? "/api/database/addfavorite"
+      : "/api/database/removefavorite";
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -66,11 +80,11 @@ function RecipeView() {
         },
         body: JSON.stringify({ recipeId: loadedRecipe.recipeid, appUserId: 1 }),
       });
-      if (!response.ok) throw new Error("error");
+      if (!response.ok) throw new Error("Failed to toggle favorite status");
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+};
 
   const handleExploreSimilar = async () => {
     console.log("Entering handleExploreSimilar");
@@ -92,6 +106,7 @@ function RecipeView() {
   }
 
   return (
+    
     <Box
       sx={{
         display: "flex",
@@ -101,6 +116,11 @@ function RecipeView() {
         padding: "0 20px",
       }}
     >
+      <Box className="myrecipes" sx={{ flexGrow: 1, padding: 3 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                Recipe View
+            </Typography>
+        </Box>
       <RecipeCard recipe={loadedRecipe} detailed={true} />
       <Box
         sx={{

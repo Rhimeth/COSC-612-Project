@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, CardContent, Typography, Avatar, Box } from "@mui/material";
-import PropTypes from "prop-types";
-import AssistantIcon from "@mui/icons-material/Assistant";
+import React from "react"
+import { Card, CardContent, Typography, Avatar, Box } from "@mui/material"
+import PropTypes from "prop-types"
+import AssistantIcon from "@mui/icons-material/Assistant"
 
 function LLMResults({ llmResults }) {
   if (!llmResults) {
@@ -9,7 +9,7 @@ function LLMResults({ llmResults }) {
       <Typography variant="h6" style={{ margin: 20 }}>
         Describe to the LLM what kind of recipe you are looking for.
       </Typography>
-    );
+    )
   }
 
   return (
@@ -37,7 +37,7 @@ function LLMResults({ llmResults }) {
     </CardContent>
   </Card>
 </Box>
-  );
+  )
 }
 
 LLMResults.propTypes = {
@@ -45,6 +45,6 @@ LLMResults.propTypes = {
     role: PropTypes.string,
     content: PropTypes.string,
   }),
-};
+}
 
-export default LLMResults;
+export default LLMResults

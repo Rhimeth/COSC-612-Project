@@ -1,4 +1,4 @@
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { Link, useMatch, useResolvedPath } from "react-router-dom"
 // Link allows us to replace anchor tags so that we don't get a page
 // reload upon navigation **instead of href, you use "to"**
 
@@ -21,7 +21,7 @@ export default function Navbar() {
         <CustomLink to="/recipeview">Recipe View</CustomLink>
       </ul>
     </nav>
-  );
+  )
 }
 
 // Routing
@@ -37,8 +37,8 @@ export default function Navbar() {
 function CustomLink({ to, children, ...props }) {
   // Using React router requires resolving path
   // resolvedPath is the same as absolute path
-  const resolvedPath = useResolvedPath(to);
-  const isActive = useMatch({ path: resolvedPath.pathname, end: true }); // end:true means no partial matchning
+  const resolvedPath = useResolvedPath(to)
+  const isActive = useMatch({ path: resolvedPath.pathname, end: true }) // end:true means no partial matchning
 
   return (
     <li className={isActive ? "active" : ""}>
@@ -46,5 +46,5 @@ function CustomLink({ to, children, ...props }) {
         {children}
       </Link>
     </li>
-  );
+  )
 }

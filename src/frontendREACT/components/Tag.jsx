@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { Box } from '@mui/material';
+import { Box } from '@mui/material'
 
 const colors = [
     '#FF0000', 
@@ -18,10 +18,10 @@ const colors = [
     '#EE82EE',
     '#000000',
     '#3F3F3F'
-];
+]
 
 const Tag = ({ tag }) => {
-    const color = colors[tag.tagId - 1];
+    const color = colors[tag.tagId - 1]
 
     return (
         <Box
@@ -40,7 +40,7 @@ const Tag = ({ tag }) => {
         >
             {tag.name}
         </Box>
-    );
-};
+    )
+}
 
-export default Tag;
+export default Tag

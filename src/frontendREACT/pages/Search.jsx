@@ -1,16 +1,16 @@
 
-import { Typography, Box } from '@mui/material';
-import { useState } from "react";
-import * as Buttons from "@mui/material";
-import * as Icons from "@mui/icons-material";
-//TODO used instead of div import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Divider from "@mui/material/Divider";
-import LLMResults from "../components/LLMResults";
+import { Typography, Box } from '@mui/material'
+import { useState } from "react"
+import * as Buttons from "@mui/material"
+import * as Icons from "@mui/icons-material"
+//TODO used instead of div import Box from "@mui/material/Box"
+import TextField from "@mui/material/TextField"
+import Divider from "@mui/material/Divider"
+import LLMResults from "../components/LLMResults"
 
-import RecipeCard from "../components/RecipeCard";
+import RecipeCard from "../components/RecipeCard"
 
-import "../styles.css";
+import "../styles.css"
 
 const buttonStyle = {
   backgroundColor: "green",
@@ -31,77 +31,76 @@ const buttonStyle = {
     backgroundColor: "#cccccc",
     color: "#666666",
   },
-};
+}
 
 const textboxStyle = {
   width: "30rem",
   backgroundColor: "white",
-};
+}
 
 export default function Search() {
   // Searching by title
-  const [titleSearch, setTitleSearch] = useState("");
-  const [titleSearchResults, setTitleSearchResults] = useState([]);
+  const [titleSearch, setTitleSearch] = useState("")
+  const [titleSearchResults, setTitleSearchResults] = useState([])
 
   // Search with LLM
-  const [llmSearch, setLlmSearch] = useState("");
-  const [llmSearchResults, setLlmResults] = useState([]);
+  const [llmSearch, setLlmSearch] = useState("")
+  const [llmSearchResults, setLlmResults] = useState([])
 
   // Title Search
   const handleTitleSearch = async () => {
-    console.log("Entering handleTitleSearch");
+    console.log("Entering handleTitleSearch")
     if (!titleSearch) {
-      alert("Search can't be empty");
-      return;
+      alert("Search can't be empty")
+      return
     }
 
     try {
-      console.log("Searching for: ", titleSearch);
+      console.log("Searching for: ", titleSearch)
       const response = await fetch(
         `/api/database/titlesearch?q=${encodeURIComponent(titleSearch)}`
-      );
-      let data = await response.json();
-      console.log("Data received:", data);
+      )
+      let data = await response.json()
+      console.log("Data received:", data)
       data = data.map((item) => ({
         ...item,
         directions: JSON.parse(item.directions),
         measurementingredient: JSON.parse(item.measurementingredient),
-      }));
-      setTitleSearchResults(data);
+      }))
+      setTitleSearchResults(data)
     } catch (error) {
-      console.error("Unable to fetch data due to", error);
-      setTitleSearchResults([]); // had to clear results if it errors
+      console.error("Unable to fetch data due to", error)
+      setTitleSearchResults([]) // had to clear results if it errors
     }
-  };
+  }
 
   // LLM Search
   const handleLLMSearch = async () => {
     if (llmSearch.length <= 10) {
-      alert("LLM search must be more than 10 characters");
-      return;
+      alert("LLM search must be more than 10 characters")
+      return
     } else {
       try {
-        console.log("At the frontend LLM try block");
+        console.log("At the frontend LLM try block")
         const response = await fetch(
           `/api/database/llmsearch?q=${encodeURIComponent(llmSearch)}`
-        );
-        const data = await response.json();
-        setLlmResults(data);
+        )
+        const data = await response.json()
+        setLlmResults(data)
       } catch (error) {
-        console.error("Error querying LLM:", error);
-        setLlmResults([]); // had to clear results if it errors
+        console.error("Error querying LLM:", error)
+        setLlmResults([]) // had to clear results if it errors
       }
     }
-  };
+  }
 
   return (
     
     <div className="super-container">
       <Box className="myrecipes" sx={{ flexGrow: 1, padding: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-                Favorites
+                Search
             </Typography>
-            
         </Box>
       <div className="search-container">
         <div className="title-search-container">
@@ -176,7 +175,7 @@ export default function Search() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 

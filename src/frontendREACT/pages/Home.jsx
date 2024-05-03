@@ -1,8 +1,8 @@
-import { Link as RouterLink } from 'react-router-dom';
-import { Typography, Box, Card, CardActionArea, CardContent, Grow } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';  // Import for Search
-import FavoriteIcon from '@mui/icons-material/Favorite';  // Import for Favorites
-import RecipeIcon from '@mui/icons-material/Book';  // Import for My Recipes
+import { Link as RouterLink } from 'react-router-dom'
+import { Typography, Box, Card, CardActionArea, CardContent, Grow } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'  // Import for Search
+import FavoriteIcon from '@mui/icons-material/Favorite'  // Import for Favorites
+import RecipeIcon from '@mui/icons-material/Book'  // Import for My Recipes
 
 export default function home() {
     return (
@@ -49,5 +49,5 @@ export default function home() {
                 </Grow>
             </Box>
         </Box>
-    );
+    )
 }

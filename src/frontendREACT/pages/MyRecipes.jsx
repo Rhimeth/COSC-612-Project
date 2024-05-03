@@ -1,5 +1,5 @@
 
-import { Typography, Box,} from '@mui/material';
+import { Typography, Box,} from '@mui/material'
 
 export default function myRecipes() {
     return (
@@ -9,5 +9,5 @@ export default function myRecipes() {
             </Typography>
             
         </Box>
-    );
+    )
 }
