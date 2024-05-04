@@ -75,7 +75,7 @@ app.get("/database/exploresimilar", async (req, res) => {
   try {
     console.log("at backend try of exploresimilar");
     const { recipeid } = req.query;
-    console.log(recipeid)
+    console.log(recipeid);
     if (!recipeid) {
       return res.status(400).json({ error: "No recipe ID provided" });
     }
@@ -92,7 +92,10 @@ app.get("/database/exploresimilar", async (req, res) => {
 // Title Search
 app.get("/database/titlesearch", async (req, res) => {
   // This setup gives priority to exact matching, then matching 4 words, 3, words, ect
-  const searchTitle = req.query.q;
+  const { searchTitle, culinaryPreference } = req.query;
+
+  console.log("culnary preferece is: ", culinaryPreference);
+
   const searchWords = searchTitle.split(/\s+/);
   const twoWordPatterns = searchWords
     .map((_, i, arr) => arr[i] + " " + arr[i + 1])
@@ -106,23 +109,54 @@ app.get("/database/titlesearch", async (req, res) => {
     ...searchWords,
   ].join("|");
 
+  let excludeTags;
+
+  switch (culinaryPreference) {
+    case "Vegan":
+      excludeTags = ["poultry", "beef", "pork", "fish", "dairy"];
+      break;
+    case "Vegetarian":
+      excludeTags = ["poultry", "beef", "pork", "fish"];
+      break;
+    case "Dairyfree":
+      excludeTags = ["dairy"];
+      break;
+    default:
+      excludeTags = null;
+  }
+
+  console.log("we are going to try to exclude: ", excludeTags);
+
   const sqlTitleSearch = `
-      SELECT r.RecipeID, r.Title, r.directions, r.measurementingredient,
-        CASE
-          WHEN r.Title ILIKE $1 THEN 1
-          WHEN r.Title ~* $2 THEN 2
-          ELSE 3
-        END AS Priority
-      FROM Recipe r
-      WHERE r.Title ILIKE $1 OR r.Title ~* $2
-      ORDER BY Priority, r.Title
-      LIMIT 10`;
+    SELECT r.RecipeID, r.Title, r.directions, r.measurementingredient,
+      CASE
+        WHEN r.Title ILIKE $1 THEN 1
+        WHEN r.Title ~* $2 THEN 2
+        ELSE 3
+      END AS Priority
+    FROM Recipe r
+    JOIN recipeingredients ri ON ri.recipeid = r.recipeid
+    JOIN ingredienttags it ON it.ingredientid = ri.ingredientid
+    JOIN tags t ON t.tagid = it.tagid
+    WHERE (r.Title ILIKE $1 OR r.Title ~* $2)
+      AND r.RecipeID NOT IN (
+        SELECT ri2.recipeid
+        FROM recipeingredients ri2
+        JOIN ingredienttags it2 ON it2.ingredientid = ri2.ingredientid
+        JOIN tags t2 ON t2.tagid = it2.tagid
+        WHERE LOWER(t2.name) = ANY($3)
+      )
+    GROUP BY r.RecipeID, r.Title, r.directions, r.measurementingredient
+    ORDER BY Priority, r.Title
+    LIMIT 20;
+    `;
 
   try {
     console.log("made it to the backend try statement");
     const results = await pool.query(sqlTitleSearch, [
       `%${searchTitle}%`, // Exact title match
       searchPattern,
+      excludeTags,
     ]);
     console.log("just finished query, going to send response");
     console.log(results.rows);
