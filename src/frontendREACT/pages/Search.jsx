@@ -1,12 +1,12 @@
 import { Typography, Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Buttons from "@mui/material";
 import * as Icons from "@mui/icons-material";
 //TODO used instead of div import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import LLMResults from "../components/LLMResults";
-
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import RecipeCard from "../components/RecipeCard";
 
 import "../styles.css";
@@ -41,10 +41,18 @@ export default function Search() {
   // Searching by title
   const [titleSearch, setTitleSearch] = useState("");
   const [titleSearchResults, setTitleSearchResults] = useState([]);
+  const [culinaryPreference, setCulinaryPreference] = useState("");
 
   // Search with LLM
   const [llmSearch, setLlmSearch] = useState("");
   const [llmSearchResults, setLlmResults] = useState([]);
+
+  useEffect(() => {
+    console.log(
+      "(use effect) Culinary preference updated to:",
+      culinaryPreference
+    );
+  }, [culinaryPreference]);
 
   // Title Search
   const handleTitleSearch = async () => {
@@ -55,10 +63,14 @@ export default function Search() {
     }
 
     try {
-      console.log("Searching for: ", titleSearch);
-      const response = await fetch(
-        `/api/database/titlesearch?q=${encodeURIComponent(titleSearch)}`
-      );
+      console.log("at frontend try of search");
+
+      const encodedTitleSearch = encodeURIComponent(titleSearch);
+      const encodedCulinaryPreference = encodeURIComponent(culinaryPreference);
+
+      const url = `/api/database/titlesearch?searchTitle=${encodedTitleSearch}&culinaryPreference=${encodedCulinaryPreference}`;
+
+      const response = await fetch(url);
       let data = await response.json();
       console.log("Data received:", data);
       data = data.map((item) => ({
@@ -69,7 +81,7 @@ export default function Search() {
       setTitleSearchResults(data);
     } catch (error) {
       console.error("Unable to fetch data due to", error);
-      setTitleSearchResults([]); // had to clear results if it errors
+      setTitleSearchResults([]); // Clear results if it errors
     }
   };
 
@@ -102,18 +114,44 @@ export default function Search() {
       </Box>
       <div className="search-container">
         <div className="title-search-container">
-          <div className="input-group">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              mt: 6,
+              bgcolor: "white",
+              padding: "0.5rem"
+            }}
+          >
             <TextField
-              singleline
-              rows={3}
-              defaultValue="Default Value"
+              fullWidth
+              label="Title Search"
+              variant="outlined"
               placeholder="Enter title here..."
-              className="search-input wide-input"
               value={titleSearch}
               onChange={(e) => setTitleSearch(e.target.value)}
-              sx={{ ...textboxStyle, mt: "4rem" }}
+              sx={{ flexGrow: 3 }}
             />
-          </div>
+            <FormControl sx={{ width: "20rem", bgcolor: "white" }}>
+              <InputLabel id="culinary-preference-select-label">
+                Culinary Preference
+              </InputLabel>
+              <Select
+                labelId="culinary-preference-select-label"
+                id="culinary-preference-select"
+                value={culinaryPreference}
+                label="Culinary Preference"
+                onChange={(e) => setCulinaryPreference(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Vegan">Vegan</MenuItem>
+                <MenuItem value="Vegetarian">Vegetarian</MenuItem>
+                <MenuItem value="Dairyfree">Dairy-Free</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
           <div>
             <Buttons.Button
               variant="contained"
