@@ -26,12 +26,6 @@ CREATE TABLE Recipe (
   Title text
 );
 
-CREATE TABLE RecipeTags (
-  TagID SERIAL REFERENCES Tags(TagID),
-  RecipeID int REFERENCES Recipe(RecipeID),
-  PRIMARY KEY (TagID, RecipeID)
-);
-
 CREATE TABLE Ingredient (
   IngredientID SERIAL PRIMARY KEY,
   Name varchar(50)
