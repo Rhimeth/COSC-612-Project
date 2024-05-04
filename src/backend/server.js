@@ -33,7 +33,80 @@ app.get("/", (req, res) => {
   res.send("sucessful GET request");
 });
 
-// LLM Search
+app.get("/database/fetchmyrecipes", async (req, res) => {
+  const { appUserId } = req.query;
+
+  const query = `
+  SELECT r.recipeid, r.title, r.measurementingredient, r.directions
+  FROM recipe r
+  JOIN userrecipes ON r.recipeid = userrecipes.recipeid
+  WHERE userrecipes.appuserid = $1;
+  `;
+
+  try {
+    console.log("at backend try of fetchmyrecipes");
+    const results = await pool.query(query, [appUserId]);
+    if (results.rows.length > 0) {
+      res.json(results.rows);
+      console.log("results: ", results.rows);
+    } else {
+      res.status(404).send("No recipes found for the user.");
+    }
+    console.log("success");
+  } catch (error) {
+    console.error("Error retrieving recipes:", error);
+    res
+      .status(500)
+      .send("Failed to retrieve recipes due to an internal error.");
+  }
+});
+
+app.get("/database/recipeupload", async (req, res) => {
+  const { title, measurementingredient, directions } = req.query;
+
+  const createJsonArrayString = (listStr) => {
+    const items = listStr.split(/,\s*/); 
+    return JSON.stringify(items); 
+  };
+
+  const formattedMeasurementIngredient = createJsonArrayString(
+    measurementingredient
+  );
+  const formattedDirections = createJsonArrayString(
+    directions.replace(/(\.\s+|\.$)/g, ",")
+  );
+
+  const insertRecipeQuery = `
+    INSERT INTO recipe (title, measurementingredient, directions)
+    VALUES ($1, $2, $3)
+    RETURNING recipeid;
+  `;
+
+  try {
+    await pool.query("BEGIN");
+    const recipeResult = await pool.query(insertRecipeQuery, [
+      title,
+      formattedMeasurementIngredient,
+      formattedDirections,
+    ]);
+    const recipeId = recipeResult.rows[0].recipeid;
+
+    const associateRecipeQuery = `
+      INSERT INTO userrecipes (appuserid, recipeid)
+      VALUES (1, $1);
+    `;
+    await pool.query(associateRecipeQuery, [recipeId]);
+
+    await pool.query("COMMIT");
+    res.json({ recipeId: recipeId });
+  } catch (error) {
+    console.error("Error during recipe upload:", error);
+    await pool.query("ROLLBACK");
+    res.status(500).send("Error uploading recipe");
+  }
+});
+
+// Tags Search
 app.get("/database/tagssearch", async (req, res) => {
   const recipeId = req.query.recipeId;
 
@@ -197,6 +270,7 @@ app.get("/database/getallfavorites", async (req, res) => {
     } else {
       res.status(404).json({ message: "No favorites found" });
     }
+    console.log("results: ", result.rows);
   } catch (error) {
     console.error("Error retrieving favorites:", error);
     res.status(500).json({ error: "Failed to retrieve favorites" });

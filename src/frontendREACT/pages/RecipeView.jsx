@@ -48,14 +48,6 @@ function RecipeView() {
     }
   };
 
-  // Search with Explore Similar
-  // const [exploreSimilarSearch, setexploreSimilarSearch] = useState("");
-  // const [exploreSimilarSearchResults, setexploreSimilarSearchResults] = useState("");
-
-  // useEffect(() => {
-  //   //checkFavoriteStatus();
-  // }, []);
-
   const checkFavoriteStatus = async (recipeId) => {
     try {
       const response = await fetch(
