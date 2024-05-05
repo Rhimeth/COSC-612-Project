@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* 
 Each test is part of a transaction (BEGIN). 
 This way we can revert state back to the original database (ROLLBACK).
@@ -10,7 +11,7 @@ Admin: can do all user action in addtion to other actions
 // afterAll(async () => await pool.end());
 // beforeAll(async () => await pool.open());
 
-import pool from "../backend/db.js"; // Importing pool from db.js
+import pool from "../src/backend/db.js"; // Importing pool from db.js
 
 // AppUser Table Test
 // User: update password, delete their account
@@ -104,8 +105,8 @@ describe("Tags Table Operations", () => {
   beforeEach(async () => {
     await pool.query("BEGIN");
     await pool.query("INSERT INTO Tags (TagID, Name) VALUES ($1, $2)", [
-      1,
-      "tagthatisnotreal1",
+      999999,
+      "tagthatisnotreal99",
     ]);
   });
 
@@ -113,10 +114,10 @@ describe("Tags Table Operations", () => {
 
   it("should read the inserted tag", async () => {
     const res = await pool.query("SELECT * FROM Tags WHERE name = $1", [
-      "tagthatisnotreal1",
+      "tagthatisnotreal99",
     ]);
     expect(res.rows.length).toBe(1);
-    expect(res.rows[0].name).toEqual("tagthatisnotreal1");
+    expect(res.rows[0].name).toEqual("tagthatisnotreal99");
   });
 });
 

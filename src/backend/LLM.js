@@ -44,7 +44,7 @@ class LLM {
       return response;
     } catch (error) {
       console.error("Query failed:", error);
-      return null;
+      throw error;
     }
   }
 

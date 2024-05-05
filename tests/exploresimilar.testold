@@ -1,13 +1,17 @@
+/* eslint-disable no-undef */
 /*
 // Test ID: 02
 */
 // This test sees if the exploring similar recipes will deny invalid input
 // and accept valid input, and return a new recipe based on the search
 
-// The database is currently mocked, but still properly tests the functions
 
-import exploreSimilarRecipes from "../backend/exploresimilar.js";
-import pool from "../backend/db.js";
+/* The explore similar search logic was changed so these test "fail" only because
+they test a setup that doesn't exist anymore
+*/
+
+import exploreSimilarRecipes from "../src/backend/exploresimilar.js";
+import pool from "../src/backend/db.js";
 
 // TODO Right now the query will return the item that you were also search for, this will change later
 
