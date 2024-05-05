@@ -3,10 +3,18 @@ READ ME
 Change DATABASE_URL_CLOUD to DATABASE_URL_LOCAL if you want to make database locally with PostgreSQL
 */
 
-import dotenv from "dotenv"; // load env variables from .env
-import pg from "pg"; // PostgreSQL module
+import dotenv from 'dotenv';
+import pg from 'pg';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config({ path: "../../.env" });
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BASE_DIR = path.resolve(__dirname, '../../../');
+const envPath = path.resolve(BASE_DIR, '.env');
+dotenv.config({ path: envPath });
+
+
 const { Pool } = pg;
 
 //TODO I suppressed a warning that seems to be a false positive
