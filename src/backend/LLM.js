@@ -4,16 +4,12 @@ Currently setup to work with OpenAI's API
 
 import OpenAI from "openai";
 import dotenv from "dotenv";
-
-import path from 'path';
+import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BASE_DIR = path.resolve(__dirname, '../../../');
-const envPath = path.resolve(BASE_DIR, '.env');
-
-dotenv.config({ path: envPath });
+dotenv.config({ path: `${__dirname}/../../../.env` });
 
 
 class LLM {
@@ -28,7 +24,6 @@ class LLM {
     console.log("LLM constructor called");
     if (!LLM.instance) {
       this.openai = new OpenAI({
-        // eslint-disable-next-line no-undef
         apiKey: process.env.OPENAI_API_KEY,
       });
     } else {

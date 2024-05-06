@@ -11,9 +11,11 @@ import pool from "./db.js"; // Importing pool from db
 import LLM from "./LLM.js";
 import exploreSimilarRecipes from "./exploresimilar.js";
 
-const llm = new LLM();
+
 const app = express();
 const port = 3000;
+const llm = new LLM();
+
 
 // Starts server on port 3000
 console.log("Starting the server...");
@@ -241,19 +243,6 @@ app.get("/database/titlesearch", async (req, res) => {
   }
 });
 
-// LLM Search
-app.get("/database/llmsearch", async (req, res) => {
-  try {
-    console.log("At backend /llmsearch try block");
-    const prompt = req.query.q;
-    const results = await llm.query(prompt);
-    console.log(results);
-    res.json(results);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server error");
-  }
-});
 
 app.get("/database/getallfavorites", async (req, res) => {
   const { appUserId } = req.query;
