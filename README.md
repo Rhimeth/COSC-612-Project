@@ -3,6 +3,10 @@
 A project built by Towson University students for their Software Engineering class (COSC 612)
 
 - !!! must put in the .env file for root in order to use POSTGRES on railway and LLM API
+- ctrl + shift + F for process.env.OPENAI_API_KEY
+- Replace with string that is in the .env file
+- ctrl + shift + F for DATABASE_URL_CLOUD
+- Replace with string that is in the .env file
 
 Front End
 - Has it's own development server using Vite
@@ -25,7 +29,8 @@ Testing
 ```
 - cd to the root folder /src/
 - npm install
-- npm install --save-dev jest 
+- npm install --save-dev jest
+- npm install cross-env
 - npm test
 ```
 
