@@ -12,6 +12,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_DIR = path.resolve(__dirname, '../../../');
 const envPath = path.resolve(BASE_DIR, '.env');
+
 dotenv.config({ path: envPath });
 
 

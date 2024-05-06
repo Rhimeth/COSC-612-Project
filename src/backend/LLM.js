@@ -5,7 +5,16 @@ Currently setup to work with OpenAI's API
 import OpenAI from "openai";
 import dotenv from "dotenv";
 
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BASE_DIR = path.resolve(__dirname, '../../../');
+const envPath = path.resolve(BASE_DIR, '.env');
+
+dotenv.config({ path: envPath });
+
 
 class LLM {
   // Attributes
