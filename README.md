@@ -7,7 +7,7 @@ A project built by Towson University students for their Software Engineering cla
 Front End
 - Has it's own development server using Vite
 ```
-- cd to /src/frontendREACT
+- cd to root
 - npm install
 - npm run dev
 - go to the localhost url provided to you
